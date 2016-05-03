@@ -1,7 +1,7 @@
 package it.prova;
 
-import it.unimib.disco.ab.FileIteratorSplitter;
-import it.unimib.disco.ab.InstancesBuilder;
+import it.unimib.disco.ab.malletLDA.FileIteratorSplitter;
+import it.unimib.disco.ab.malletLDA.InstancesBuilder;
 
 import java.io.*;
 import java.util.*;

@@ -1,6 +1,6 @@
 package it.prova;
 
-import it.unimib.disco.ab.InstancesBuilder;
+import it.unimib.disco.ab.malletLDA.InstancesBuilder;
 
 import java.awt.EventQueue;
 
@@ -24,6 +24,7 @@ import java.util.Formatter;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.TreeSet;
+
 import javax.swing.JScrollPane;
 import javax.swing.SpinnerNumberModel;
 
