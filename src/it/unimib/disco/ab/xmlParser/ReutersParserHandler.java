@@ -127,7 +127,6 @@ public class ReutersParserHandler extends DefaultHandler{
 			try {
 				this.article.date = d.parse(new String(ch, start, length));
 			} catch (ParseException e) {}
-			this.date = false;
 		}else
 		if(this.topics && this.d){
 			this.article.topics.add(new String(ch, start, length));
@@ -151,7 +150,9 @@ public class ReutersParserHandler extends DefaultHandler{
 			this.article.title = new String(ch, start, length);
 		}else
 		if(this.text && this.body){
-			this.article.text = new String(ch, start, length);
+			//This part can be improved using StringBuffer
+			this.article.text = this.article.text + new String(ch, start, length);
+			
 		}
 	}
 	

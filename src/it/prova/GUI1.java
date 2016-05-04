@@ -96,10 +96,10 @@ public class GUI1 {
 		btnModella.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				InstanceList instances = InstancesBuilder.getInstances(textField.getText());
-				int nTopics = 10;
+				int nTopics = (Integer)spinner.getValue();
 				double alpha = 1.0;
 				double beta = 0.01;
-				ParallelTopicModel model = new ParallelTopicModel((Integer)spinner.getValue(), alpha, beta);
+				ParallelTopicModel model = new ParallelTopicModel(nTopics, alpha, beta);
 				model.setNumThreads(4);
 				model.setNumIterations(1000);
 				model.addInstances(instances);	
@@ -120,7 +120,7 @@ public class GUI1 {
 		                out.format("%s (%.0f)", dataAlphabet.lookupObject(idCountPair.getID()), idCountPair.getWeight());
 		                rank++;
 		            }
-		           textArea.setText(textArea.getText() + "\n" + out);
+		           textArea.setText(textArea.getText() + "\n"+ topic + ")\t" + out);
 		        }
 				
 				
