@@ -13,5 +13,11 @@
 	<classpathentry kind="lib" path="/home/alessandro/Schifezze/mallet-2.0.7/lib/openjgraph.jar"/>
 	<classpathentry kind="lib" path="/home/alessandro/Schifezze/mallet-2.0.7/lib/trove-2.0.2.jar"/>
 	<classpathentry kind="lib" path="/home/alessandro/Schifezze/mallet-2.0.7/class"/>
+	<classpathentry kind="lib" path="/home/alessandro/Schifezze/stanford-ner-2015-12-09/stanford-ner-3.6.0.jar"/>
+	<classpathentry kind="lib" path="/home/alessandro/Schifezze/stanford-ner-2015-12-09/lib/joda-time.jar"/>
+	<classpathentry kind="lib" path="/home/alessandro/Schifezze/stanford-ner-2015-12-09/lib/jollyday-0.4.7.jar"/>
+	<classpathentry kind="lib" path="/home/alessandro/Schifezze/stanford-ner-2015-12-09/lib/slf4j-api.jar"/>
+	<classpathentry kind="lib" path="/home/alessandro/Schifezze/stanford-ner-2015-12-09/lib/slf4j-simple.jar"/>
+	<classpathentry kind="lib" path="/home/alessandro/Schifezze/stanford-ner-2015-12-09/lib/stanford-ner-resources.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
