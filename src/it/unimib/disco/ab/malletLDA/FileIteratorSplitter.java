@@ -44,7 +44,7 @@ public class FileIteratorSplitter extends FileIterator {
 		while(this.splittedText == null || this.textPosition >= this.splittedText.length){
 			this.splitText();
 		}
-		Instance i = new Instance(this.splittedText[this.textPosition],this.targetName, this.name + "_" + this.textPosition, null);
+		Instance i = new Instance(this.splittedText[this.textPosition],this.targetName, this.name + "_" + this.textPosition, this.splittedText[this.textPosition]);
 		this.textPosition++;
 		return i;
 		

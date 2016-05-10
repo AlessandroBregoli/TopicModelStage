@@ -1,6 +1,9 @@
 package it.prova;
 
 import it.unimib.disco.ab.malletLDA.InstancesBuilder;
+import it.unimib.disco.ab.ner.CustomEntity;
+import it.unimib.disco.ab.ner.Ner;
+import it.unimib.disco.ab.ner.TopicStat;
 
 import java.awt.EventQueue;
 
@@ -18,11 +21,17 @@ import cc.mallet.types.InstanceList;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Formatter;
 import java.util.Iterator;
 import java.util.Locale;
+import java.util.TreeMap;
 import java.util.TreeSet;
 
 import javax.swing.JScrollPane;
@@ -121,8 +130,44 @@ public class GUI1 {
 		                rank++;
 		            }
 		           textArea.setText(textArea.getText() + "\n"+ topic + ")\t" + out);
-		        }
-				
+				}
+		        
+				Ner ner;
+				try {
+					File f = new File("relazione.csv");
+					FileWriter fw = new FileWriter(f);
+					BufferedWriter bw = new BufferedWriter(fw);
+					ner = new Ner("/home/alessandro/Schifezze/stanford-ner-2015-12-09/classifiers/english.all.3class.distsim.crf.ser.gz",model.getInferencer(),instances);
+					TreeMap<CustomEntity, TopicStat> relation = ner.entityTopicRelation();
+					bw.write("entita\tclasse\tBestTopic\tnumElement\ttopic\n");
+					for(CustomEntity ce:relation.keySet()){
+						bw.write(ce.entityString);
+						bw.write("\t");
+						bw.write(ce.entityClass);
+						bw.write("\t");
+						double[] stat = relation.get(ce).mean();
+						
+						StringBuilder b = new StringBuilder();
+						int max = 0;
+						for(int stat_i = 0; stat_i < stat.length; stat_i++){
+							b.append("\t");
+							b.append(Double.toString(stat[stat_i]));
+							if(stat[max] < stat[stat_i])
+								max = stat_i;
+						}
+						bw.write(Integer.toString(max));
+						bw.write("\t");
+						bw.write(Integer.toString(relation.get(ce).getNumEl()));
+						bw.write(b.toString());
+						bw.write("\n");
+					}
+					bw.close();
+					fw.close();
+				} catch (ClassCastException | ClassNotFoundException
+						| IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				
 			}
 		});

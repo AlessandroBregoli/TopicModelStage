@@ -12,7 +12,7 @@ import cc.mallet.types.*;
 
 public class InstancesBuilder {
 	private InstancesBuilder(){}
-	private static Pipe buildPipe() {
+	public static Pipe buildPipe() {
         ArrayList pipeList = new ArrayList();
 
 

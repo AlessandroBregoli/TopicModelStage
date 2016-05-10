@@ -10,7 +10,7 @@ import cc.mallet.types.InstanceList;
 public class CustomTopicModel {
 	private String dataSet;
 	private int nTopics;
-	private ParallelTopicModel model;
+	public ParallelTopicModel model;
 	public CustomTopicModel(String dataSet){
 		this.dataSet = dataSet;
 	}
@@ -18,6 +18,7 @@ public class CustomTopicModel {
 	public void modella(int nTopics){
 		this.nTopics = nTopics;
 		InstanceList instances = InstancesBuilder.getInstances(this.dataSet);
+		
 		double alpha = 1.0;
 		double beta = 0.01;
 		this.model = new ParallelTopicModel(nTopics, alpha, beta);
