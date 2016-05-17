@@ -31,6 +31,7 @@ public class FileIteratorSplitter extends FileIterator {
 	private String targetName;
 	//The iterator position into the splitted text sequence
 	private int textPosition;
+	//The articles readed from the file
 	private LinkedList<Article> articles;
 	public FileIteratorSplitter(File[] directory, FileFilter filt, Pattern p) {
 		super(directory, filt, p);

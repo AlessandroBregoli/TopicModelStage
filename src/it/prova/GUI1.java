@@ -21,8 +21,10 @@ import cc.mallet.types.InstanceList;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -30,6 +32,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Formatter;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.Locale;
 import java.util.TreeMap;
 import java.util.TreeSet;
@@ -106,7 +109,7 @@ public class GUI1 {
 			public void actionPerformed(ActionEvent arg0) {
 				InstanceList instances = InstancesBuilder.getInstances(textField.getText());
 				int nTopics = (Integer)spinner.getValue();
-				double alpha = 1.0;
+				double alpha = 50;
 				double beta = 0.01;
 				ParallelTopicModel model = new ParallelTopicModel(nTopics, alpha, beta);
 				model.setNumThreads(4);
@@ -124,7 +127,7 @@ public class GUI1 {
 		            out = new Formatter(new StringBuilder(), Locale.US);
 		           
 		            int rank = 0;
-		            while (iterator.hasNext() && rank < 5) {
+		            while (iterator.hasNext() && rank < 10) {
 		                IDSorter idCountPair = iterator.next();
 		                out.format("%s (%.0f)", dataAlphabet.lookupObject(idCountPair.getID()), idCountPair.getWeight());
 		                rank++;
@@ -137,7 +140,18 @@ public class GUI1 {
 					File f = new File("relazione.csv");
 					FileWriter fw = new FileWriter(f);
 					BufferedWriter bw = new BufferedWriter(fw);
-					ner = new Ner("/home/alessandro/Schifezze/stanford-ner-2015-12-09/classifiers/english.all.3class.distsim.crf.ser.gz",model.getInferencer(),instances);
+					File sw = new File("/home/alessandro/Schifezze/mallet-2.0.7/stoplists/en.txt");
+					FileReader fr = new FileReader(sw);
+					BufferedReader br = new BufferedReader(fr);
+					LinkedList<String> stopWords= new LinkedList<String>();
+					
+					String stopword;
+					while((stopword = br.readLine())!=null){
+						stopWords.add(stopword);
+					}
+					br.close();
+					fr.close();
+					ner = new Ner("/home/alessandro/Schifezze/stanford-ner-2015-12-09/classifiers/english.conll.4class.distsim.crf.ser.gz",model.getInferencer(),instances, stopWords);
 					TreeMap<CustomEntity, TopicStat> relation = ner.entityTopicRelation();
 					bw.write("entita\tclasse\tBestTopic\tnumElement\ttopic\n");
 					for(CustomEntity ce:relation.keySet()){

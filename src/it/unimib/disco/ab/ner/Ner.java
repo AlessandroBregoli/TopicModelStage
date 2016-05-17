@@ -22,12 +22,12 @@ public class Ner {
 	private AbstractSequenceClassifier<CoreLabel> classifier;
 	private TopicInferencer inferencer;
 	private InstanceList dataSet;
-	
-	public Ner(String serializedClassifier, TopicInferencer inferencer, InstanceList dataSet) throws ClassCastException, ClassNotFoundException, IOException{
+	private List<String> stopWords;
+	public Ner(String serializedClassifier, TopicInferencer inferencer, InstanceList dataSet, List<String> stopWords) throws ClassCastException, ClassNotFoundException, IOException{
 		this.classifier = CRFClassifier.getClassifier(serializedClassifier);
 		this.inferencer = inferencer;
 		this.dataSet = dataSet;
-		
+		this.stopWords = stopWords;
 	}
 	
 	
@@ -47,9 +47,11 @@ public class Ner {
 		        	CustomEntity customEntity = new CustomEntity();
 		        	customEntity.entityString = word.word();
 		        	customEntity.entityClass = word.get(CoreAnnotations.AnswerAnnotation.class);
+		        	
 		        	// TODO Questo if è un po' troppo hard coded
-		        	if(customEntity.entityClass.equals("O"))
+		        	if(customEntity.entityClass.equals("O") || this.stopWords.indexOf(word.word().toLowerCase()) != -1)
 		        		continue;
+		        	
 		        	TopicStat t = relation.get(customEntity);
 		        	if(t == null){
 		        		t = new TopicStat(testProb);
