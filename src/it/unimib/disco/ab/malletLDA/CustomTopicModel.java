@@ -1,5 +1,6 @@
 package it.unimib.disco.ab.malletLDA;
 
+import java.io.File;
 import java.io.IOException;
 
 import cc.mallet.topics.ParallelTopicModel;
@@ -15,9 +16,9 @@ public class CustomTopicModel {
 		this.dataSet = dataSet;
 	}
 	
-	public void modella(int nTopics){
+	public void modella(int nTopics, File stopWordFile){
 		this.nTopics = nTopics;
-		InstanceList instances = InstancesBuilder.getInstances(this.dataSet);
+		InstanceList instances = InstancesBuilder.getInstances(this.dataSet, stopWordFile);
 		
 		double alpha = 1.0;
 		double beta = 0.01;

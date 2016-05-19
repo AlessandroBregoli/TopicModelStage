@@ -96,7 +96,7 @@ public class ImportExample {
 
     public static void main (String[] args) throws IOException {
 
-        InstanceList instances = InstancesBuilder.getInstances(args[0]);
+        InstanceList instances = InstancesBuilder.getInstances(args[0], new File("/home/alessandro/Schifezze/mallet-2.0.7/stoplists/en.txt"));
         int numTopics = 10;
         ParallelTopicModel model = new ParallelTopicModel(numTopics, 1, 0.01);
 

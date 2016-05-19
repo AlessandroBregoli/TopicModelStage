@@ -18,13 +18,16 @@ import cc.mallet.topics.TopicInferencer;
 import cc.mallet.types.Instance;
 import cc.mallet.types.InstanceList;
 	
-public class Ner {
-	private AbstractSequenceClassifier<CoreLabel> classifier;
+public class Ner { 
+	private AbstractSequenceClassifier<CoreLabel>[] classifier;
 	private TopicInferencer inferencer;
 	private InstanceList dataSet;
 	private List<String> stopWords;
-	public Ner(String serializedClassifier, TopicInferencer inferencer, InstanceList dataSet, List<String> stopWords) throws ClassCastException, ClassNotFoundException, IOException{
-		this.classifier = CRFClassifier.getClassifier(serializedClassifier);
+	public Ner(String serializedClassifier[], TopicInferencer inferencer, InstanceList dataSet, List<String> stopWords) throws ClassCastException, ClassNotFoundException, IOException{
+		this.classifier = new AbstractSequenceClassifier[serializedClassifier.length];
+		for(int i = 0; i < serializedClassifier.length; i++){
+			this.classifier[i] = CRFClassifier.getClassifier(serializedClassifier[i]);
+		}
 		this.inferencer = inferencer;
 		this.dataSet = dataSet;
 		this.stopWords = stopWords;
@@ -37,36 +40,40 @@ public class Ner {
 		
 		while(iter.hasNext()){
 			Instance inst = (Instance) iter.next();
-			List<List<CoreLabel>> out = classifier.classify((String)inst.getSource());
-			if(out.size() == 0)
+			NerMerge nerMerge = new NerMerge((String)inst.getSource());
+			for(int i = 0; i < this.classifier.length; i++){
+				List<Triple<String,Integer,Integer>> out = this.classifier[i].classifyToCharacterOffsets((String)inst.getSource());
+				for(Triple<String,Integer,Integer> triple: out){
+					nerMerge.add(triple);
+				}
+			}
+			
+			if(!nerMerge.iterator().hasNext())
 				continue;
 			double[] testProb = this.inferencer.getSampledDistribution(inst, 50, 5, 25);
-			
-			for (List<CoreLabel> sentence : out) {
-		        for (CoreLabel word : sentence) {
-		        	CustomEntity customEntity = new CustomEntity();
-		        	customEntity.entityString = word.word();
-		        	customEntity.entityClass = word.get(CoreAnnotations.AnswerAnnotation.class);
-		        	
-		        	// TODO Questo if è un po' troppo hard coded
-		        	if(customEntity.entityClass.equals("O") || this.stopWords.indexOf(word.word().toLowerCase()) != -1)
-		        		continue;
-		        	
-		        	TopicStat t = relation.get(customEntity);
-		        	if(t == null){
-		        		t = new TopicStat(testProb);
-		        		relation.put(customEntity, t);
-		        	}
-		        	else{
-		        		try {
-							t.add(testProb);
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-		        	}
-		        		
-		        }
+			Iterator it = nerMerge.iterator();
+			while(it.hasNext()){
+				NerMergeElement ele = (NerMergeElement) it.next();
+				CustomEntity customEntity = new CustomEntity();
+	        	customEntity.entityString = ele.text;
+	        	customEntity.entityClass = ele.label;
+	        	if(this.stopWords.indexOf(customEntity.entityString.toLowerCase()) != -1 || customEntity.entityClass.equals("0"))
+	        		continue;
+	        	TopicStat t = relation.get(customEntity);
+	        	if(t == null){
+	        		t = new TopicStat(testProb);
+	        		relation.put(customEntity, t);
+	        	}
+	        	else{
+	        		try {
+						t.add(testProb);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+	        	}
+
 			}
+			
 		}
 		return relation;
 	}

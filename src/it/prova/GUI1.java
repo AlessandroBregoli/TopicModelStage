@@ -107,7 +107,9 @@ public class GUI1 {
 		JButton btnModella = new JButton("Modella");
 		btnModella.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				InstanceList instances = InstancesBuilder.getInstances(textField.getText());
+				File sw = new File("/home/alessandro/Schifezze/mallet-2.0.7/stoplists/en.txt");
+				InstanceList instances = InstancesBuilder.getInstances(textField.getText(), sw);
+		
 				int nTopics = (Integer)spinner.getValue();
 				double alpha = 50;
 				double beta = 0.01;
@@ -140,7 +142,6 @@ public class GUI1 {
 					File f = new File("relazione.csv");
 					FileWriter fw = new FileWriter(f);
 					BufferedWriter bw = new BufferedWriter(fw);
-					File sw = new File("/home/alessandro/Schifezze/mallet-2.0.7/stoplists/en.txt");
 					FileReader fr = new FileReader(sw);
 					BufferedReader br = new BufferedReader(fr);
 					LinkedList<String> stopWords= new LinkedList<String>();
@@ -151,7 +152,12 @@ public class GUI1 {
 					}
 					br.close();
 					fr.close();
-					ner = new Ner("/home/alessandro/Schifezze/stanford-ner-2015-12-09/classifiers/english.conll.4class.distsim.crf.ser.gz",model.getInferencer(),instances, stopWords);
+					String[] serialNer = {
+							"/home/alessandro/Schifezze/stanford-ner-2015-12-09/classifiers/english.all.3class.distsim.crf.ser.gz",
+							"/home/alessandro/Schifezze/stanford-ner-2015-12-09/classifiers/english.conll.4class.distsim.crf.ser.gz",
+							"/home/alessandro/Schifezze/stanford-ner-2015-12-09/classifiers/english.muc.7class.distsim.crf.ser.gz"
+					};
+					ner = new Ner(serialNer,model.getInferencer(),instances, stopWords);
 					TreeMap<CustomEntity, TopicStat> relation = ner.entityTopicRelation();
 					bw.write("entita\tclasse\tBestTopic\tnumElement\ttopic\n");
 					for(CustomEntity ce:relation.keySet()){
