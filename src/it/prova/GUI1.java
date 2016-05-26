@@ -111,12 +111,14 @@ public class GUI1 {
 				InstanceList instances = InstancesBuilder.getInstances(textField.getText(), sw);
 		
 				int nTopics = (Integer)spinner.getValue();
-				double alpha = 50;
+				double alpha = 0.01;
 				double beta = 0.01;
-				ParallelTopicModel model = new ParallelTopicModel(nTopics, alpha, beta);
+				ParallelTopicModel model = new ParallelTopicModel(nTopics, alpha* nTopics, beta);
+				model.setSymmetricAlpha(true);
 				model.setNumThreads(4);
 				model.setNumIterations(1000);
-				model.addInstances(instances);	
+				model.addInstances(instances);
+				model.optimizeInterval = 0;
 				try {
 					model.estimate();
 				} catch (IOException e) {}
@@ -159,7 +161,7 @@ public class GUI1 {
 					};
 					ner = new Ner(serialNer,model.getInferencer(),instances, stopWords);
 					TreeMap<CustomEntity, TopicStat> relation = ner.entityTopicRelation();
-					bw.write("entita\tclasse\tBestTopic\tnumElement\ttopic\n");
+					bw.write("entita\tclasse\tBestTopic\tBestTopic%\tnumElement\ttopic\n");
 					for(CustomEntity ce:relation.keySet()){
 						bw.write(ce.entityString);
 						bw.write("\t");
@@ -176,6 +178,8 @@ public class GUI1 {
 								max = stat_i;
 						}
 						bw.write(Integer.toString(max));
+						bw.write("\t");
+						bw.write(Double.toString(stat[max]*100));
 						bw.write("\t");
 						bw.write(Integer.toString(relation.get(ce).getNumEl()));
 						bw.write(b.toString());

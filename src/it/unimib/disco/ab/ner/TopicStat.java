@@ -1,7 +1,7 @@
 package it.unimib.disco.ab.ner;
 //This class is a container for the data relation between entities and topics 
 public class TopicStat {
-	private double[] stat;
+	public double[] stat;
 	int numEl;
 	public TopicStat(double[] stat){
 		this.stat = stat;

@@ -20,10 +20,12 @@ public class CustomTopicModel {
 		this.nTopics = nTopics;
 		InstanceList instances = InstancesBuilder.getInstances(this.dataSet, stopWordFile);
 		
-		double alpha = 1.0;
+		double alpha = 0.001* nTopics;
 		double beta = 0.01;
 		this.model = new ParallelTopicModel(nTopics, alpha, beta);
+		this.model.setSymmetricAlpha(true);
 		this.model.setNumThreads(4);
+		this.model.optimizeInterval = 0;
 		this.model.setNumIterations(1000);
 		this.model.addInstances(instances);	
 		try {

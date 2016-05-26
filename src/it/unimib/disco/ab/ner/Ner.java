@@ -36,7 +36,7 @@ public class Ner {
 	
 	public 	TreeMap<CustomEntity, TopicStat>  entityTopicRelation(){
 		TreeMap<CustomEntity, TopicStat> relation = new TreeMap<CustomEntity, TopicStat>();
-		Iterator iter = this.dataSet.iterator();
+		Iterator iter = this.dataSet.iterator();		
 		
 		while(iter.hasNext()){
 			Instance inst = (Instance) iter.next();
@@ -51,6 +51,8 @@ public class Ner {
 			if(!nerMerge.iterator().hasNext())
 				continue;
 			double[] testProb = this.inferencer.getSampledDistribution(inst, 50, 5, 25);
+			
+			
 			Iterator it = nerMerge.iterator();
 			while(it.hasNext()){
 				NerMergeElement ele = (NerMergeElement) it.next();
