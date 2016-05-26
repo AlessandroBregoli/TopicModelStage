@@ -10,6 +10,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.URI;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.regex.*;
 
@@ -33,6 +34,9 @@ public class FileIteratorSplitter extends FileIterator {
 	private int textPosition;
 	//The articles readed from the file
 	private LinkedList<Article> articles;
+	
+	private Date articleDate;
+	
 	public FileIteratorSplitter(File[] directory, FileFilter filt, Pattern p) {
 		super(directory, filt, p);
 		this.textPosition = 0;
@@ -45,7 +49,10 @@ public class FileIteratorSplitter extends FileIterator {
 		while(this.splittedText == null || this.textPosition >= this.splittedText.length){
 			this.splitText();
 		}
-		Instance i = new Instance(this.splittedText[this.textPosition],this.targetName, this.name + "_" + this.textPosition, this.splittedText[this.textPosition]);
+		InstanceSourceContainer sc = new InstanceSourceContainer();
+		sc.text = this.splittedText[this.textPosition];
+		sc.date = this.articleDate;
+		Instance i = new Instance(this.splittedText[this.textPosition],this.targetName, this.name + "_" + this.textPosition, sc);
 		this.textPosition++;
 		return i;
 		
@@ -75,6 +82,7 @@ public class FileIteratorSplitter extends FileIterator {
 		System.out.println(article.title);
 		this.splittedText = article.text.split("(?<=\\p{Ll}[.?!;])\\s+(?=\\p{Lu})");
 		this.name = article.title;
+		this.articleDate = article.date;
 		
 			
 		

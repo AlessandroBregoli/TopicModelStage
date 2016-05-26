@@ -7,6 +7,7 @@ import edu.stanford.nlp.ling.CoreAnnotations;
 import edu.stanford.nlp.sequences.DocumentReaderAndWriter;
 import edu.stanford.nlp.util.Triple;
 import it.unimib.disco.ab.malletLDA.CustomTopicModel;
+import it.unimib.disco.ab.malletLDA.InstanceSourceContainer;
 import it.unimib.disco.ab.malletLDA.InstancesBuilder;
 
 import java.io.IOException;
@@ -40,7 +41,7 @@ public class Ner {
 		
 		while(iter.hasNext()){
 			Instance inst = (Instance) iter.next();
-			NerMerge nerMerge = new NerMerge((String)inst.getSource());
+			NerMerge nerMerge = new NerMerge(((InstanceSourceContainer)inst.getSource()).text);
 			for(int i = 0; i < this.classifier.length; i++){
 				List<Triple<String,Integer,Integer>> out = this.classifier[i].classifyToCharacterOffsets((String)inst.getSource());
 				for(Triple<String,Integer,Integer> triple: out){
