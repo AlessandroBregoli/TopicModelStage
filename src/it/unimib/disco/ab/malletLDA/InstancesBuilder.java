@@ -10,6 +10,8 @@ import cc.mallet.topics.ParallelTopicModel;
 import cc.mallet.topics.TopicInferencer;
 import cc.mallet.types.*;
 
+
+//Questa classe non fa altro che creare la Pipe e inserire le istanze al suo interno. 
 public class InstancesBuilder {
 	private InstancesBuilder(){}
 	public static Pipe buildPipe(File stopWordFile) {

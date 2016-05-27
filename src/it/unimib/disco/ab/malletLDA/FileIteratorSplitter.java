@@ -34,7 +34,7 @@ public class FileIteratorSplitter extends FileIterator {
 	private int textPosition;
 	//The articles readed from the file
 	private LinkedList<Article> articles;
-	
+	//Data dell'articolo
 	private Date articleDate;
 	
 	public FileIteratorSplitter(File[] directory, FileFilter filt, Pattern p) {
@@ -49,15 +49,21 @@ public class FileIteratorSplitter extends FileIterator {
 		while(this.splittedText == null || this.textPosition >= this.splittedText.length){
 			this.splitText();
 		}
+		//Crea un contenitore che al suo interno avrà il valore della stringa di testo
+		//e la data corrispondente all'articolo
 		InstanceSourceContainer sc = new InstanceSourceContainer();
 		sc.text = this.splittedText[this.textPosition];
 		sc.date = this.articleDate;
+		//Crea l'istanza vera e propria; la quale ha come targetName il targetName ereditato da FileIterator, 
+		//e come nome il titolo dell'articolo unito alla posizione dellla frase nell'articolo
 		Instance i = new Instance(this.splittedText[this.textPosition],this.targetName, this.name + "_" + this.textPosition, sc);
 		this.textPosition++;
 		return i;
 		
 	}
 	
+	//Questo metodo splitta gli articoli di un file
+	//Se gli articoli sono finiti parsa il file successivo e splitta le frasi dell'articolo
 	private void splitText(){
 		this.textPosition = 0;
 		if(this.articles.size() == 0){

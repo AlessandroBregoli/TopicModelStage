@@ -3,7 +3,7 @@ package it.unimib.disco.ab.ner;
 import java.io.Serializable;
 
 //this class contain the single instance of a entity
-public class CustomEntity implements Comparable{
+public class CustomEntity implements Comparable, Serializable{
 	public String entityString;
 	public String entityClass;
 	

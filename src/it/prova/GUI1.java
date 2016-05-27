@@ -24,9 +24,11 @@ import java.awt.event.ActionEvent;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -161,6 +163,15 @@ public class GUI1 {
 					};
 					ner = new Ner(serialNer,model.getInferencer(),instances, stopWords);
 					TreeMap<CustomEntity, TopicStat> relation = ner.entityTopicRelation();
+					try{
+						FileOutputStream fos = new FileOutputStream("relation.dat");
+						ObjectOutputStream oos = new ObjectOutputStream(fos);
+						oos.writeObject(relation);
+						oos.close();
+						fos.close();
+					}catch(Exception e){
+						e.printStackTrace();
+					}
 					bw.write("entita\tclasse\tBestTopic\tBestTopic%\tnumElement\ttopic\n");
 					for(CustomEntity ce:relation.keySet()){
 						bw.write(ce.entityString);
