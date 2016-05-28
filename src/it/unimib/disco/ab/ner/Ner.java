@@ -6,6 +6,7 @@ import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.ling.CoreAnnotations;
 import edu.stanford.nlp.sequences.DocumentReaderAndWriter;
 import edu.stanford.nlp.util.Triple;
+import it.unimib.disco.ab.entityTimeCorrelation.ParallelMedia;
 import it.unimib.disco.ab.malletLDA.CustomTopicModel;
 import it.unimib.disco.ab.malletLDA.InstanceSourceContainer;
 import it.unimib.disco.ab.malletLDA.InstancesBuilder;
@@ -27,7 +28,8 @@ public class Ner {
 	private TopicInferencer inferencer;
 	private InstanceList dataSet;
 	private List<String> stopWords;
-	public Ner(String serializedClassifier[], TopicInferencer inferencer, InstanceList dataSet, List<String> stopWords) throws ClassCastException, ClassNotFoundException, IOException{
+	private int nThreads;
+	public Ner(String serializedClassifier[], TopicInferencer inferencer, InstanceList dataSet, List<String> stopWords, int nThreads) throws ClassCastException, ClassNotFoundException, IOException{
 		this.classifier = new AbstractSequenceClassifier[serializedClassifier.length];
 		for(int i = 0; i < serializedClassifier.length; i++){
 			this.classifier[i] = CRFClassifier.getClassifier(serializedClassifier[i]);
@@ -35,10 +37,12 @@ public class Ner {
 		this.inferencer = inferencer;
 		this.dataSet = dataSet;
 		this.stopWords = stopWords;
+		this.nThreads = nThreads;
+		
 	}
 	
 	
-	public 	TreeMap<CustomEntity, TopicStat>  entityTopicRelation(){
+	public 	TreeMap<CustomEntity, TopicStat>  entityTopicRelation() throws Exception{
 		TreeMap<CustomEntity, TopicStat> relation = new TreeMap<CustomEntity, TopicStat>();
 		Iterator iter = this.dataSet.iterator();		
 		//Per ogni frase cerco le varie enity e le unisco tramite la casse NerMerge 
@@ -82,6 +86,8 @@ public class Ner {
 			}
 			
 		}
+		ParallelMedia p = new ParallelMedia(this.nThreads, relation, 0);
+		p.finalizeWork();
 		return relation;
 	}
 }

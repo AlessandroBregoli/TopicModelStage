@@ -161,9 +161,12 @@ public class GUI1 {
 							"/home/alessandro/Schifezze/stanford-ner-2015-12-09/classifiers/english.conll.4class.distsim.crf.ser.gz",
 							"/home/alessandro/Schifezze/stanford-ner-2015-12-09/classifiers/english.muc.7class.distsim.crf.ser.gz"
 					};
-					ner = new Ner(serialNer,model.getInferencer(),instances, stopWords);
-					TreeMap<CustomEntity, TopicStat> relation = ner.entityTopicRelation();
+					ner = new Ner(serialNer,model.getInferencer(),instances, stopWords,4);
+					TreeMap<CustomEntity, TopicStat> relation;
+					relation = ner.entityTopicRelation();
+					
 					try{
+						
 						FileOutputStream fos = new FileOutputStream("relation.dat");
 						ObjectOutputStream oos = new ObjectOutputStream(fos);
 						oos.writeObject(relation);
@@ -178,19 +181,16 @@ public class GUI1 {
 						bw.write("\t");
 						bw.write(ce.entityClass);
 						bw.write("\t");
-						double[] stat = relation.get(ce).mean();
+						double[] stat = relation.get(ce).getMean();
 						
 						StringBuilder b = new StringBuilder();
-						int max = 0;
 						for(int stat_i = 0; stat_i < stat.length; stat_i++){
 							b.append("\t");
 							b.append(Double.toString(stat[stat_i]));
-							if(stat[max] < stat[stat_i])
-								max = stat_i;
 						}
-						bw.write(Integer.toString(max));
+						bw.write(Integer.toString(relation.get(ce).getBestTopic()));
 						bw.write("\t");
-						bw.write(Double.toString(stat[max]*100));
+						bw.write(Double.toString(stat[relation.get(ce).getBestTopic()]*100));
 						bw.write("\t");
 						bw.write(Integer.toString(relation.get(ce).getNumEl()));
 						bw.write(b.toString());
@@ -202,6 +202,9 @@ public class GUI1 {
 						| IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
 				}
 				
 			}
