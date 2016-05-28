@@ -1,7 +1,6 @@
 package it.unimib.disco.ab.entityTimeCorrelation;
 
 import it.unimib.disco.ab.ner.CustomEntity;
-import it.unimib.disco.ab.ner.TopicStat;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -53,7 +52,6 @@ public class ParallelMedia {
 			try {
 				wait();
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		for(CustomEntity c:this.badEntity){

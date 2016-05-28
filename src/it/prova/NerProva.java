@@ -18,7 +18,7 @@ import it.unimib.disco.ab.ner.Ner;
 public class NerProva {
 
 	public static void main(String[] args) throws ClassCastException, ClassNotFoundException, IOException {
-		// TODO Auto-generated method stub
+		
 		AbstractSequenceClassifier<CoreLabel> classifier = CRFClassifier.getClassifier("/home/alessandro/Schifezze/stanford-ner-2015-12-09/classifiers/english.conll.4class.distsim.crf.ser.gz");
 		List<Triple<String,Integer,Integer>> out = classifier.classifyToCharacterOffsets("New York, the city that never slip; home for Stephen Hawking");
 		for (Triple<String,Integer,Integer> label : out) {

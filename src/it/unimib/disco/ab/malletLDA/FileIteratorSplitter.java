@@ -77,7 +77,7 @@ public class FileIteratorSplitter extends FileIterator {
 				ReutersParserHandler userhandler = new ReutersParserHandler(this.articles);
 				saxParser.parse(f, userhandler);
 			} catch (ParserConfigurationException | SAXException | IOException e) {
-				// TODO Auto-generated catch block
+				
 				e.printStackTrace();
 			}
 

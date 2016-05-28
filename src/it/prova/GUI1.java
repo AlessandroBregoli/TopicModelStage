@@ -1,9 +1,9 @@
 package it.prova;
 
+import it.unimib.disco.ab.entityTimeCorrelation.TopicStat;
 import it.unimib.disco.ab.malletLDA.InstancesBuilder;
 import it.unimib.disco.ab.ner.CustomEntity;
 import it.unimib.disco.ab.ner.Ner;
-import it.unimib.disco.ab.ner.TopicStat;
 
 import java.awt.EventQueue;
 
@@ -200,10 +200,9 @@ public class GUI1 {
 					fw.close();
 				} catch (ClassCastException | ClassNotFoundException
 						| IOException e) {
-					// TODO Auto-generated catch block
+					
 					e.printStackTrace();
 				} catch (Exception e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 				

@@ -1,7 +1,6 @@
 package it.unimib.disco.ab.entityTimeCorrelation;
 
 import it.unimib.disco.ab.ner.CustomEntity;
-import it.unimib.disco.ab.ner.TopicStat;
 
 public class MediaThread extends Thread{
 	ParallelMedia p;
@@ -17,7 +16,7 @@ public class MediaThread extends Thread{
 			if(c == null)
 				break;
 			TopicStat ts = this.p.relation.get(c);
-			if(ts.getCalculatedMean()[ts.getBestTopic()] < this.purity)
+			if(ts.getMean()[ts.getBestTopic()] < this.purity)
 				this.p.addBadEntity(c);
 			
 		}

@@ -52,7 +52,7 @@ public class NerMerge implements Iterable<NerMergeElement> {
 	}
 	@Override
 	public Iterator<NerMergeElement> iterator() {
-		// TODO Auto-generated method stub
+		
 		return new NerMergeIterator();
 	}
 	

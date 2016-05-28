@@ -1,7 +1,6 @@
 package it.unimib.disco.ab.entityTimeCorrelation;
 
 import it.unimib.disco.ab.ner.CustomEntity;
-import it.unimib.disco.ab.ner.TopicStat;
 
 import java.util.TreeMap;
 
@@ -27,7 +26,6 @@ public class ParallelStatistics extends Thread{
 			pm = new ParallelMedia(this.nThreads, this.relation, this.purity);
 			pm.finalizeWork();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		

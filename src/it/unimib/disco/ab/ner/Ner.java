@@ -7,6 +7,7 @@ import edu.stanford.nlp.ling.CoreAnnotations;
 import edu.stanford.nlp.sequences.DocumentReaderAndWriter;
 import edu.stanford.nlp.util.Triple;
 import it.unimib.disco.ab.entityTimeCorrelation.ParallelMedia;
+import it.unimib.disco.ab.entityTimeCorrelation.TopicStat;
 import it.unimib.disco.ab.malletLDA.CustomTopicModel;
 import it.unimib.disco.ab.malletLDA.InstanceSourceContainer;
 import it.unimib.disco.ab.malletLDA.InstancesBuilder;
