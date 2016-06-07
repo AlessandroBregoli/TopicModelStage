@@ -37,11 +37,14 @@ public class FileIteratorSplitter extends FileIterator {
 	//Data dell'articolo
 	private Date articleDate;
 	
+	private long sentenceConunter;
+	
 	public FileIteratorSplitter(File[] directory, FileFilter filt, Pattern p) {
 		super(directory, filt, p);
 		this.textPosition = 0;
 		this.splittedText = null;
 		this.articles = new LinkedList<Article>();
+		this.sentenceConunter = 0;
 	}
 	
 	
@@ -56,7 +59,8 @@ public class FileIteratorSplitter extends FileIterator {
 		sc.date = this.articleDate;
 		//Crea l'istanza vera e propria; la quale ha come targetName il targetName ereditato da FileIterator, 
 		//e come nome il titolo dell'articolo unito alla posizione dellla frase nell'articolo
-		Instance i = new Instance(this.splittedText[this.textPosition],this.targetName, this.name + "_" + this.textPosition, sc);
+		Instance i = new Instance(this.splittedText[this.textPosition],this.targetName, this.sentenceConunter, sc);
+		this.sentenceConunter++;
 		this.textPosition++;
 		return i;
 		

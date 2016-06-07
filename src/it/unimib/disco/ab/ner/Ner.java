@@ -61,8 +61,12 @@ public class Ner {
 			if(!nerMerge.iterator().hasNext())
 				continue;
 			double[] testProb = this.inferencer.getSampledDistribution(inst, 50, 5, 25);
+			//cerco il topic della frase:
+			int sentenceBestTopic = 0;
+			for(int i = 0; i < testProb.length; i++)
+				if(testProb[i] > testProb[sentenceBestTopic])
+					sentenceBestTopic = i;
 			Date d = ((InstanceSourceContainer)inst.getSource()).date;
-			
 			Iterator it = nerMerge.iterator();
 			while(it.hasNext()){
 				NerMergeElement ele = (NerMergeElement) it.next();
@@ -73,12 +77,12 @@ public class Ner {
 	        		continue;
 	        	TopicStat t = relation.get(customEntity);
 	        	if(t == null){
-	        		t = new TopicStat(testProb,d);
+	        		t = new TopicStat(testProb,d, (long)inst.getName(), sentenceBestTopic);
 	        		relation.put(customEntity, t);
 	        	}
 	        	else{
 	        		try {
-						t.add(testProb,d);
+						t.add(testProb,d,(long)inst.getName(),sentenceBestTopic);
 					} catch (Exception e) {
 						e.printStackTrace();
 					}

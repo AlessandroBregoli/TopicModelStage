@@ -3,40 +3,54 @@ package it.unimib.disco.ab.entityTimeCorrelation;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Set;
+import java.util.TreeMap;
 
 //This class is a container for the data relation between entities and topics 
 public class TopicStat implements Serializable{
 	
-	private ArrayList<TopicStatTuple> data;
+	private TreeMap<Integer, ArrayList<TopicStatTuple>> data;
 	private double[] mean;
 	private int bestTopic;
 	private boolean updated;
-	public TopicStat(double[] stat, Date date){
-		this.data = new ArrayList<TopicStatTuple>();
+	public TopicStat(double[] stat, Date date, long sentenceID, int sentenceBestTopic){
+		this.data = new TreeMap<Integer, ArrayList<TopicStatTuple>>();
 		TopicStatTuple t = new TopicStatTuple();
 		t.stat = stat;
 		t.date = date;
-		this.data.add(t);
+		t.sentenceID = sentenceID;
+		ArrayList<TopicStatTuple> tmp = new ArrayList<TopicStatTuple>();
+		tmp.add(t);
+		this.data.put(sentenceBestTopic, tmp);
 		this.mean = null;
 		this.bestTopic = -1;
+		this.mean = new double[stat.length];
 		this.updated = true;
 	}
 	
-	public void add(double[] stat, Date date){
+	public void add(double[] stat, Date date, long sentenceID, int sentenceBestTopic){
 		TopicStatTuple t = new TopicStatTuple();
 		t.stat = stat;
 		t.date = date;
-		this.data.add(t);
+		t.sentenceID = sentenceID;
+		ArrayList<TopicStatTuple> tmp = this.data.get(sentenceBestTopic);
+		if(tmp == null){
+			tmp = new ArrayList<TopicStatTuple>();
+			this.data.put(sentenceBestTopic, tmp);
+		}
+		tmp.add(t);
 		this.updated = true;
 	}
 	
-	private void calcMean(){
-		this.mean = new double[this.data.get(0).stat.length];
+	private void calcMean(){	
 		this.bestTopic = 0;
-		for( TopicStatTuple d: this.data)
-			for(int i = 0; i < d.stat.length; i++){
-				this.mean[i] += d.stat[i]/data.size();
-			}
+		int size = this.getNumEl();
+		for(int key: this.data.keySet())
+			for( TopicStatTuple d: this.data.get(key))
+				for(int i = 0; i < d.stat.length; i++){
+					this.mean[i] += d.stat[i]/size;
+				}
+		
 		
 	}
 	//Questa cosa si potrebbe rendere più efficiente se si calcolasse il bestTopic in calcMean
@@ -61,6 +75,10 @@ public class TopicStat implements Serializable{
 		return this.bestTopic;
 	}
 	public int getNumEl(){
-		return this.data.size();
+		int size = 0;
+		for(int i:this.data.keySet()){
+			size = size + this.data.get(i).size();
+		}
+		return size;
 	}
 }
