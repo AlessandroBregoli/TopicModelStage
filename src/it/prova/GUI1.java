@@ -1,6 +1,7 @@
 package it.prova;
 
 import it.unimib.disco.ab.entityTimeCorrelation.TopicStat;
+import it.unimib.disco.ab.graphs.StaticGraphGenerator;
 import it.unimib.disco.ab.malletLDA.InstancesBuilder;
 import it.unimib.disco.ab.ner.CustomEntity;
 import it.unimib.disco.ab.ner.Ner;
@@ -113,7 +114,7 @@ public class GUI1 {
 				InstanceList instances = InstancesBuilder.getInstances(textField.getText(), sw);
 		
 				int nTopics = (Integer)spinner.getValue();
-				double alpha = 0.01;
+				double alpha = 0.0001;
 				double beta = 0.01;
 				ParallelTopicModel model = new ParallelTopicModel(nTopics, alpha* nTopics, beta);
 				model.setSymmetricAlpha(true);
@@ -198,6 +199,8 @@ public class GUI1 {
 					}
 					bw.close();
 					fw.close();
+					StaticGraphGenerator tgg = new StaticGraphGenerator(relation, 4);
+					tgg.waitUntillEnd();
 				} catch (ClassCastException | ClassNotFoundException
 						| IOException e) {
 					
