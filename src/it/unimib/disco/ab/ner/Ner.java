@@ -61,6 +61,13 @@ public class Ner {
 			if(!nerMerge.iterator().hasNext())
 				continue;
 			double[] testProb = this.inferencer.getSampledDistribution(inst, 50, 5, 25);
+			/*
+			 //Questo ciclo serve per il debug; in particolare stampa a video le probabilita dei singoli topic
+			 //per ogni sentence; ai fini del progetto è bene che ogni sentence abbia un solo topic predominante
+			for(int i = 0; i < testProb.length; i++)
+				System.out.print(testProb[i] + "\t");
+			System.out.println();
+			*/
 			//cerco il topic della frase:
 			int sentenceBestTopic = 0;
 			for(int i = 0; i < testProb.length; i++)

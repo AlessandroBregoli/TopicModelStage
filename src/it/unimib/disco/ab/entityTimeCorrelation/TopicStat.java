@@ -7,10 +7,13 @@ import java.util.Set;
 import java.util.TreeMap;
 
 //This class is a container for the data relation between entities and topics 
+//TODO Si potrebbero implementare le eccezioni nel caso in cui le dimensioni delle statistiche delle sentence non combaciassero 
+
 public class TopicStat implements Serializable{
 	
 	private TreeMap<Integer, ArrayList<TopicStatTuple>> data;
 	private double[] mean;
+	private final int nTopics;
 	private int bestTopic;
 	private boolean updated;
 	public TopicStat(double[] stat, Date date, long sentenceID, int sentenceBestTopic){
@@ -25,6 +28,7 @@ public class TopicStat implements Serializable{
 		this.mean = null;
 		this.bestTopic = -1;
 		this.mean = new double[stat.length];
+		this.nTopics = stat.length;
 		this.updated = true;
 	}
 	
@@ -81,4 +85,14 @@ public class TopicStat implements Serializable{
 		}
 		return size;
 	}
+
+	public int getNTopics(){
+		return this.nTopics;
+	}
+
+	public TreeMap<Integer, ArrayList<TopicStatTuple>> getData() {
+		return data;
+	}
+	
 }
+
