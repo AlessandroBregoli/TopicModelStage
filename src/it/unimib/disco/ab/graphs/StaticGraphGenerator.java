@@ -1,24 +1,25 @@
 package it.unimib.disco.ab.graphs;
 
-import it.unimib.disco.ab.entityTimeCorrelation.TopicStat;
+import it.unimib.disco.ab.entityTopicStatistics.NerStats;
+import it.unimib.disco.ab.entityTopicStatistics.TopicStat;
 import it.unimib.disco.ab.ner.CustomEntity;
 
 import java.util.TreeMap;
 
 public class StaticGraphGenerator {
-	TreeMap<CustomEntity, TopicStat> relation;
+	NerStats nerStats;
 	private int nThreads;
 	private StaticGraphGeneratorThread[] thread;
 	private int topicIndex;
 	public EntityTopicGraph[] graphs;
-	public StaticGraphGenerator(TreeMap<CustomEntity, TopicStat> relation, int nThreads) throws Exception{
-		this.relation = relation;
+	public StaticGraphGenerator(NerStats nerStats, int nThreads) throws Exception{
+		this.nerStats = nerStats;
 		if(nThreads <= 0){
 			throw new Exception("I thread  devono essere positivi");
 		}
 		this.nThreads = nThreads;
 		this.thread = new StaticGraphGeneratorThread[this.nThreads];
-		this.graphs = new EntityTopicGraph[this.relation.get(this.relation.firstKey()).getNTopics()];
+		this.graphs = new EntityTopicGraph[this.nerStats.relation.get(this.nerStats.relation.firstKey()).getNTopics()];
 		this.topicIndex = 0;
 		for(int i = 0; i < this.nThreads; i++){
 			this.thread[i] = new StaticGraphGeneratorThread(this);

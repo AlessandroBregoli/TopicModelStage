@@ -1,6 +1,7 @@
 package it.prova;
 
-import it.unimib.disco.ab.entityTimeCorrelation.TopicStat;
+import it.unimib.disco.ab.entityTopicStatistics.NerStats;
+import it.unimib.disco.ab.entityTopicStatistics.TopicStat;
 import it.unimib.disco.ab.graphs.StaticGraphGenerator;
 import it.unimib.disco.ab.malletLDA.InstancesBuilder;
 import it.unimib.disco.ab.ner.CustomEntity;
@@ -116,7 +117,7 @@ public class GUI1 {
 				int nTopics = (Integer)spinner.getValue();
 				double alpha = 0.0001;
 				double beta = 0.01;
-				ParallelTopicModel model = new ParallelTopicModel(nTopics, alpha* nTopics, beta);
+				ParallelTopicModel model = new ParallelTopicModel(nTopics, alpha * nTopics, beta);
 				model.setSymmetricAlpha(true);
 				model.setNumThreads(4);
 				model.setNumIterations(1000);
@@ -163,43 +164,43 @@ public class GUI1 {
 							"/home/alessandro/Schifezze/stanford-ner-2015-12-09/classifiers/english.muc.7class.distsim.crf.ser.gz"
 					};
 					ner = new Ner(serialNer,model.getInferencer(),instances, stopWords,4);
-					TreeMap<CustomEntity, TopicStat> relation;
-					relation = ner.entityTopicRelation();
+					NerStats nerStats;
+					nerStats = ner.entityTopicRelation();
 					
 					try{
 						
 						FileOutputStream fos = new FileOutputStream("relation.dat");
 						ObjectOutputStream oos = new ObjectOutputStream(fos);
-						oos.writeObject(relation);
+						oos.writeObject(nerStats);
 						oos.close();
 						fos.close();
 					}catch(Exception e){
 						e.printStackTrace();
 					}
 					bw.write("entita\tclasse\tBestTopic\tBestTopic%\tnumElement\ttopic\n");
-					for(CustomEntity ce:relation.keySet()){
+					for(CustomEntity ce:nerStats.relation.keySet()){
 						bw.write(ce.entityString);
 						bw.write("\t");
 						bw.write(ce.entityClass);
 						bw.write("\t");
-						double[] stat = relation.get(ce).getMean();
+						double[] stat = nerStats.relation.get(ce).getMean();
 						
 						StringBuilder b = new StringBuilder();
 						for(int stat_i = 0; stat_i < stat.length; stat_i++){
 							b.append("\t");
 							b.append(Double.toString(stat[stat_i]));
 						}
-						bw.write(Integer.toString(relation.get(ce).getBestTopic()));
+						bw.write(Integer.toString(nerStats.relation.get(ce).getBestTopic()));
 						bw.write("\t");
-						bw.write(Double.toString(stat[relation.get(ce).getBestTopic()]*100));
+						bw.write(Double.toString(stat[nerStats.relation.get(ce).getBestTopic()]*100));
 						bw.write("\t");
-						bw.write(Integer.toString(relation.get(ce).getNumEl()));
+						bw.write(Integer.toString(nerStats.relation.get(ce).getNumEl()));
 						bw.write(b.toString());
 						bw.write("\n");
 					}
 					bw.close();
 					fw.close();
-					StaticGraphGenerator tgg = new StaticGraphGenerator(relation, 4);
+					StaticGraphGenerator tgg = new StaticGraphGenerator(nerStats, 4);
 					tgg.waitUntillEnd();
 				} catch (ClassCastException | ClassNotFoundException
 						| IOException e) {

@@ -1,4 +1,4 @@
-package it.unimib.disco.ab.entityTimeCorrelation;
+package it.unimib.disco.ab.entityTopicStatistics;
 
 import java.io.Serializable;
 import java.util.Date;

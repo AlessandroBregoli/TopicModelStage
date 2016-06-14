@@ -46,10 +46,7 @@ public class EntityTopicGraph {
 			}
 			bw.close();
 			fw.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		} catch (IOException e) {e.printStackTrace();}
 		
 	}
 
