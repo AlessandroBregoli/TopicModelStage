@@ -104,7 +104,8 @@ public class Ner {
 			}
 			
 		}
-		ParallelMedia p = new ParallelMedia(this.nThreads, ret.relation, 0);
+		double purity = 1/ret.sentencePerTopic.length*1.001;
+		ParallelMedia p = new ParallelMedia(this.nThreads, ret.relation, purity);
 		p.finalizeWork();
 		
 		
