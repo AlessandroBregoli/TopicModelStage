@@ -83,7 +83,9 @@ public class ReutersParserHandler extends DefaultHandler{
 	
 	public void endElement(String uri, String localName, String qName) throws SAXException {
 		if(qName.equalsIgnoreCase("reuters")){
-			this.articleList.add(this.article);
+			//TODO OMG QUESTO È TROOOOPPO HARD-CODED
+			if(this.article.text.length() > 20)
+				this.articleList.add(this.article);
 		}else
 		if(qName.equalsIgnoreCase("date")){
 			this.date = false;
