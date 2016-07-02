@@ -115,7 +115,7 @@ public class GUI1 {
 				InstanceList instances = InstancesBuilder.getInstances(textField.getText(), sw);
 		
 				int nTopics = (Integer)spinner.getValue();
-				double alpha = 0.001;
+				double alpha = 0.0001;
 				double beta = 0.01;
 				ParallelTopicModel model = new ParallelTopicModel(nTopics, alpha * nTopics, beta);
 				model.setSymmetricAlpha(true);

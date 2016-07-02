@@ -16,11 +16,12 @@ public class TopicStat implements Serializable{
 	private final int nTopics;
 	private int bestTopic;
 	private boolean updated;
-	public TopicStat(double[] stat, Date date, long sentenceID, int sentenceBestTopic){
+	public TopicStat(double[] stat, Date date, long sentenceID,String sentenceText, int sentenceBestTopic){
 		this.data = new TreeMap<Integer, ArrayList<TopicStatTuple>>();
 		TopicStatTuple t = new TopicStatTuple();
 		t.stat = stat;
 		t.date = date;
+		t.sentenceText = sentenceText;
 		t.sentenceID = sentenceID;
 		ArrayList<TopicStatTuple> tmp = new ArrayList<TopicStatTuple>();
 		tmp.add(t);
@@ -32,11 +33,12 @@ public class TopicStat implements Serializable{
 		this.updated = true;
 	}
 	
-	public void add(double[] stat, Date date, long sentenceID, int sentenceBestTopic){
+	public void add(double[] stat, Date date, long sentenceID, String sentenceText, int sentenceBestTopic){
 		TopicStatTuple t = new TopicStatTuple();
 		t.stat = stat;
 		t.date = date;
 		t.sentenceID = sentenceID;
+		t.sentenceText = sentenceText;
 		ArrayList<TopicStatTuple> tmp = this.data.get(sentenceBestTopic);
 		if(tmp == null){
 			tmp = new ArrayList<TopicStatTuple>();

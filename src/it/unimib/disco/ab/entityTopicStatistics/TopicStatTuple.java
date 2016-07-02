@@ -7,5 +7,6 @@ public class TopicStatTuple implements Serializable{
 	public double[] stat;
 	public Date date;
 	public long sentenceID;
+	public String sentenceText;
 
 }

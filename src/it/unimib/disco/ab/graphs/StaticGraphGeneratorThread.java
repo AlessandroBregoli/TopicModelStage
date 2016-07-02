@@ -20,7 +20,7 @@ public class StaticGraphGeneratorThread extends Thread {
 				break;
 			System.err.println("Topic " + topic + ": " + this.monitor.nerStats.sentencePerTopic[topic]);
 			double epsilon = 1 / this.monitor.nerStats.sentencePerTopic[topic];
-			EntityTopicGraph graph = new EntityTopicGraph();
+			EntityTopicGraph graph = new EntityTopicGraph(topic);
 			for(CustomEntity e:this.monitor.nerStats.relation.keySet()){
 				if(this.monitor.nerStats.relation.get(e).getData().containsKey(topic)){
 					try {

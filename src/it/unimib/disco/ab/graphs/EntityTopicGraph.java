@@ -12,9 +12,11 @@ import it.unimib.disco.ab.ner.CustomEntity;
 public class EntityTopicGraph {
 	double adiacentMatrix[][];
 	ArrayList<CustomEntity> vertexDictionary;
-	public EntityTopicGraph(){
+	int topic;
+	public EntityTopicGraph(int topic){
 		this.vertexDictionary = new ArrayList<CustomEntity>();
 		this.adiacentMatrix = null;
+		this.topic = topic;
 	}
 	
 	public void addVertex(CustomEntity ent) throws Exception{

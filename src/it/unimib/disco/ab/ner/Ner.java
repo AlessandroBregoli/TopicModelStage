@@ -90,12 +90,12 @@ public class Ner {
 	        		continue;
 	        	TopicStat t = ret.relation.get(customEntity);
 	        	if(t == null){
-	        		t = new TopicStat(testProb,d, (long)inst.getName(), sentenceBestTopic);
+	        		t = new TopicStat(testProb,d, (long)inst.getName(),((InstanceSourceContainer)inst.getSource()).text, sentenceBestTopic);
 	        		ret.relation.put(customEntity, t);
 	        	}
 	        	else{
 	        		try {
-						t.add(testProb,d,(long)inst.getName(),sentenceBestTopic);
+						t.add(testProb,d,(long)inst.getName(),((InstanceSourceContainer)inst.getSource()).text, sentenceBestTopic);
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
