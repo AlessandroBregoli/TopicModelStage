@@ -2,6 +2,8 @@ package it.prova;
 
 import it.unimib.disco.ab.entityTopicStatistics.NerStats;
 import it.unimib.disco.ab.entityTopicStatistics.TopicStat;
+import it.unimib.disco.ab.graphs.StaticGraphAnalyzer;
+import it.unimib.disco.ab.graphs.StaticGraphAnalyzerThread;
 import it.unimib.disco.ab.graphs.StaticGraphGenerator;
 import it.unimib.disco.ab.malletLDA.InstancesBuilder;
 import it.unimib.disco.ab.ner.CustomEntity;
@@ -119,7 +121,7 @@ public class GUI1 {
 				double beta = 0.01;
 				ParallelTopicModel model = new ParallelTopicModel(nTopics, alpha * nTopics, beta);
 				model.setSymmetricAlpha(true);
-				model.setNumThreads(4);
+				model.setNumThreads(8);
 				model.setNumIterations(1000);
 				model.addInstances(instances);
 				model.optimizeInterval = 0;
@@ -200,8 +202,11 @@ public class GUI1 {
 					}
 					bw.close();
 					fw.close();
-					StaticGraphGenerator tgg = new StaticGraphGenerator(nerStats, 4);
+					StaticGraphGenerator tgg = new StaticGraphGenerator(nerStats, 8);
 					tgg.waitUntillEnd();
+
+					StaticGraphAnalyzer sga = new StaticGraphAnalyzer(nerStats, tgg.graphs, 2);
+					sga.analizeGraph(8);
 				} catch (ClassCastException | ClassNotFoundException
 						| IOException e) {
 					

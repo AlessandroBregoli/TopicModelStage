@@ -31,7 +31,8 @@ public class StaticGraphGeneratorThread extends Thread {
 			graph.initializeMatrix();
 			for(int i = 0; i < (graph.vertexDictionary.size() - 1); i++ ){
 				ArrayList<TopicStatTuple> tse1 = this.monitor.nerStats.relation.get(graph.vertexDictionary.get(i)).getData().get(topic);
-				for(int j = i; j < graph.vertexDictionary.size(); j++){
+				graph.adiacentMatrix[i][i] = 0.0;
+				for(int j = i+1; j < graph.vertexDictionary.size(); j++){
 					ArrayList<TopicStatTuple> tse2 = this.monitor.nerStats.relation.get(graph.vertexDictionary.get(j)).getData().get(topic);
 					double intersection = 0.0;
 					int sentencePointer1 = 0;
