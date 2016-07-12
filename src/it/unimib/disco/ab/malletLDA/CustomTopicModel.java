@@ -1,5 +1,7 @@
 package it.unimib.disco.ab.malletLDA;
 
+import it.unimib.disco.ab.textPreprocessing.SentenceContainer;
+
 import java.io.File;
 import java.io.IOException;
 
@@ -9,16 +11,16 @@ import cc.mallet.types.InstanceList;
 
 
 public class CustomTopicModel {
-	private String dataSet;
+	private SentenceContainer dataSet;
 	private int nTopics;
 	public ParallelTopicModel model;
-	public CustomTopicModel(String dataSet){
+	public CustomTopicModel(SentenceContainer dataSet){
 		this.dataSet = dataSet;
 	}
 	
-	public void modella(int nTopics, File stopWordFile){
+	public void modella(int nTopics){
 		this.nTopics = nTopics;
-		InstanceList instances = InstancesBuilder.getInstances(this.dataSet, stopWordFile);
+		InstanceList instances = InstancesBuilder.getInstances(this.dataSet);
 		
 		double alpha = 0.001* nTopics;
 		double beta = 0.01;

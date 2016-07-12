@@ -8,6 +8,8 @@ import it.unimib.disco.ab.graphs.StaticGraphGenerator;
 import it.unimib.disco.ab.malletLDA.InstancesBuilder;
 import it.unimib.disco.ab.ner.CustomEntity;
 import it.unimib.disco.ab.ner.Ner;
+import it.unimib.disco.ab.textPreprocessing.SentenceSplitter;
+import it.unimib.disco.ab.xmlParser.DirectoryScanner;
 
 import java.awt.EventQueue;
 
@@ -112,9 +114,28 @@ public class GUI1 {
 		
 		JButton btnModella = new JButton("Modella");
 		btnModella.addActionListener(new ActionListener() {
+
 			public void actionPerformed(ActionEvent arg0) {
+				
 				File sw = new File("/home/alessandro/Schifezze/mallet-2.0.7/stoplists/en.txt");
-				InstanceList instances = InstancesBuilder.getInstances(textField.getText(), sw);
+
+				LinkedList<String> stopWords= new LinkedList<String>();
+				try{
+				FileReader fr = new FileReader(sw);
+				BufferedReader br = new BufferedReader(fr);
+				
+				String stopword;
+				while((stopword = br.readLine())!=null){
+					stopWords.add(stopword);
+				}
+				br.close();
+				fr.close();
+				}catch(Exception e){}
+				DirectoryScanner ds = new DirectoryScanner(new File(textField.getText()));
+				ds.startScan();
+				SentenceSplitter senteceSplitted = new SentenceSplitter(ds.getArticles());
+				senteceSplitted.filterUsingList(stopWords);
+				InstanceList instances = InstancesBuilder.getInstances(senteceSplitted);
 		
 				int nTopics = (Integer)spinner.getValue();
 				double alpha = 0.0001;
@@ -150,16 +171,7 @@ public class GUI1 {
 					File f = new File("relazione.csv");
 					FileWriter fw = new FileWriter(f);
 					BufferedWriter bw = new BufferedWriter(fw);
-					FileReader fr = new FileReader(sw);
-					BufferedReader br = new BufferedReader(fr);
-					LinkedList<String> stopWords= new LinkedList<String>();
-					
-					String stopword;
-					while((stopword = br.readLine())!=null){
-						stopWords.add(stopword);
-					}
-					br.close();
-					fr.close();
+				
 					String[] serialNer = {
 							"/home/alessandro/Schifezze/stanford-ner-2015-12-09/classifiers/english.all.3class.distsim.crf.ser.gz",
 							"/home/alessandro/Schifezze/stanford-ner-2015-12-09/classifiers/english.conll.4class.distsim.crf.ser.gz",

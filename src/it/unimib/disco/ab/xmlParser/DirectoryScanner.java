@@ -31,6 +31,7 @@ public class DirectoryScanner {
 	        } else {
 	        	SAXParserFactory factory = SAXParserFactory.newInstance();
 		        SAXParser saxParser;
+		        System.out.println(fileEntry.getName());
 				try {
 					saxParser = factory.newSAXParser();
 					ReutersParserHandler userhandler = new ReutersParserHandler(this.articles);

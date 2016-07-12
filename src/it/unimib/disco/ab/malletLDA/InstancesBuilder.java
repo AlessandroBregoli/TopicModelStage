@@ -1,5 +1,7 @@
 package it.unimib.disco.ab.malletLDA;
 
+import it.unimib.disco.ab.textPreprocessing.SentenceContainer;
+
 import java.io.*;
 import java.util.*;
 import java.util.regex.*;
@@ -14,7 +16,7 @@ import cc.mallet.types.*;
 //Questa classe non fa altro che creare la Pipe e inserire le istanze al suo interno. 
 public class InstancesBuilder {
 	private InstancesBuilder(){}
-	public static Pipe buildPipe(File stopWordFile) {
+	public static Pipe buildPipe() {
         ArrayList pipeList = new ArrayList();
 
 
@@ -36,7 +38,6 @@ public class InstancesBuilder {
 
         // Remove stopwords from a standard English stoplist.
         //  options: [case sensitive] [mark deletions]
-        pipeList.add(new TokenSequenceRemoveStopwords(stopWordFile, "UTF-8", false, false, false));
 
         // Rather than storing tokens as strings, convert 
         //  them to integers by looking them up in an alphabet.
@@ -51,11 +52,10 @@ public class InstancesBuilder {
         return new SerialPipes(pipeList);
     }
 	
-	public static InstanceList getInstances(String dirPath, File stopWordFile){
+	public static InstanceList getInstances(SentenceContainer sentences){
 		InstanceList instances;
-		File f = new File(dirPath);
-		FileIteratorSplitter iterator = new FileIteratorSplitter(new File[]{f}, new TxtFilter(), FileIterator.LAST_DIRECTORY);
-		Pipe p = InstancesBuilder.buildPipe(stopWordFile);
+		SentenceIterator iterator = new SentenceIterator(sentences);
+		Pipe p = InstancesBuilder.buildPipe();
 		instances = new InstanceList(p);
 		instances.addThruPipe(iterator);
 		return instances;

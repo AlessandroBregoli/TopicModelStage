@@ -2,6 +2,8 @@ package it.prova;
 
 import it.unimib.disco.ab.malletLDA.FileIteratorSplitter;
 import it.unimib.disco.ab.malletLDA.InstancesBuilder;
+import it.unimib.disco.ab.textPreprocessing.SentenceContainer;
+import it.unimib.disco.ab.xmlParser.Article;
 
 import java.io.*;
 import java.util.*;
@@ -96,7 +98,7 @@ public class ImportExample {
 
     public static void main (String[] args) throws IOException {
 
-        InstanceList instances = InstancesBuilder.getInstances(args[0], new File("/home/alessandro/Schifezze/mallet-2.0.7/stoplists/en.txt"));
+        InstanceList instances = InstancesBuilder.getInstances(new SentenceContainer());
         int numTopics = 10;
         ParallelTopicModel model = new ParallelTopicModel(numTopics, 1, 0.01);
 
