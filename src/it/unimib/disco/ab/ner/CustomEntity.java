@@ -1,6 +1,8 @@
 package it.unimib.disco.ab.ner;
 
 import java.io.Serializable;
+import java.util.LinkedList;
+import java.util.List;
 
 //this class contain the single instance of a entity
 public class CustomEntity implements Comparable, Serializable{

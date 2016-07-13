@@ -5,7 +5,7 @@ import java.util.Iterator;
 
 import edu.stanford.nlp.util.Triple;
 
-public class NerMerge implements Iterable<NerMergeElement> {
+public class NerMerge implements Iterable<CustomEntity> {
 	private ArrayList<Integer> indices = new ArrayList();
 	private ArrayList<String> labels = new ArrayList<String>();
 	private String sentence;
@@ -51,12 +51,12 @@ public class NerMerge implements Iterable<NerMergeElement> {
 		
 	}
 	@Override
-	public Iterator<NerMergeElement> iterator() {
+	public Iterator<CustomEntity> iterator() {
 		
 		return new NerMergeIterator();
 	}
 	
-	private class NerMergeIterator implements Iterator<NerMergeElement>{
+	private class NerMergeIterator implements Iterator<CustomEntity>{
 		private int index;
 		public NerMergeIterator() {
 			this.index = 0;
@@ -67,10 +67,10 @@ public class NerMerge implements Iterable<NerMergeElement> {
 		}
 
 		@Override
-		public NerMergeElement next() {
-			NerMergeElement ret = new NerMergeElement();
-			ret.label = NerMerge.this.labels.get(this.index);
-			ret.text = NerMerge.this.sentence.substring(NerMerge.this.indices.get(this.index * 2), 
+		public CustomEntity next() {
+			CustomEntity ret = new CustomEntity();
+			ret.entityClass = NerMerge.this.labels.get(this.index);
+			ret.entityString = NerMerge.this.sentence.substring(NerMerge.this.indices.get(this.index * 2), 
 														NerMerge.this.indices.get(this.index * 2 + 1)).
 														replace("\n", " ");
 			this.index++;

@@ -82,10 +82,7 @@ public class Ner {
 			Date d = ((InstanceSourceContainer)inst.getSource()).date;
 			Iterator it = nerMerge.iterator();
 			while(it.hasNext()){
-				NerMergeElement ele = (NerMergeElement) it.next();
-				CustomEntity customEntity = new CustomEntity();
-	        	customEntity.entityString = ele.text;
-	        	customEntity.entityClass = ele.label;
+				CustomEntity customEntity = (CustomEntity) it.next();
 	        	if(this.stopWords.indexOf(customEntity.entityString.toLowerCase()) != -1 || customEntity.entityClass.equals("0"))
 	        		continue;
 	        	TopicStat t = ret.relation.get(customEntity);
