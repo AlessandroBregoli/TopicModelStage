@@ -12,21 +12,19 @@ import cc.mallet.types.InstanceList;
 
 public class CustomTopicModel {
 	private SentenceContainer dataSet;
-	private int nTopics;
 	public ParallelTopicModel model;
 	public CustomTopicModel(SentenceContainer dataSet){
 		this.dataSet = dataSet;
 	}
 	
 	public void modella(int nTopics){
-		this.nTopics = nTopics;
 		InstanceList instances = InstancesBuilder.getInstances(this.dataSet);
 		
 		double alpha = 0.001* nTopics;
 		double beta = 0.01;
 		this.model = new ParallelTopicModel(nTopics, alpha, beta);
 		this.model.setSymmetricAlpha(true);
-		this.model.setNumThreads(4);
+		this.model.setNumThreads(nTopics);
 		this.model.optimizeInterval = 0;
 		this.model.setNumIterations(1000);
 		this.model.addInstances(instances);	

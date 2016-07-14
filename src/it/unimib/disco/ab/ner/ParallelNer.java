@@ -12,7 +12,7 @@ import edu.stanford.nlp.ie.crf.CRFClassifier;
 import edu.stanford.nlp.ling.CoreLabel;
 
 public class ParallelNer {
-	private int nThread;
+	private int nThreads;
 	AbstractSequenceClassifier<CoreLabel>[] classifier;
 	SentenceContainer sentences;
 	TreeMap<CustomEntity, LinkedList<Long>> entities;
@@ -20,7 +20,6 @@ public class ParallelNer {
 	private boolean entitiesLights;
 	public ParallelNer(String serializedClassifier[], SentenceContainer sentences) throws ClassCastException, ClassNotFoundException, IOException{
 		this.classifier = new AbstractSequenceClassifier[serializedClassifier.length];
-		this.nThread = nThread;
 		for(int i = 0; i < serializedClassifier.length; i++){
 			this.classifier[i] = CRFClassifier.getClassifier(serializedClassifier[i]);
 		}
@@ -29,9 +28,12 @@ public class ParallelNer {
 		
 	}
 	public synchronized TreeMap<CustomEntity, LinkedList<Long>> getEntities(int nThreads){
-		this.nThread = nThread;
+		this.nThreads = nThreads;
 		this.iter = this.sentences.sentences.keySet().iterator();
-		while(this.nThread > 0 ){
+		for(int i = 0; i < this.nThreads; i++){
+			new ParallelNerThread(this).start();
+		}
+		while(this.nThreads > 0 ){
 			try {
 				wait();
 			} catch (InterruptedException e) {}
@@ -41,7 +43,7 @@ public class ParallelNer {
 	
 	public synchronized long getSentenceId(){
 		if(!this.iter.hasNext()){
-			this.nThread--;
+			this.nThreads--;
 			notifyAll();
 			return -1;
 		}

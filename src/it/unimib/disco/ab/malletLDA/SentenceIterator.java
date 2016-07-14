@@ -11,7 +11,7 @@ import cc.mallet.types.Instance;
 public class SentenceIterator implements Iterator {
 	
 	private SentenceContainer sentences;
-	private Iterator keysIt;
+	private Iterator<Long> keysIt;
 	public  SentenceIterator(SentenceContainer sentences) {
 		this.sentences = sentences;
 		this.keysIt = this.sentences.sentences.keySet().iterator();
@@ -23,7 +23,7 @@ public class SentenceIterator implements Iterator {
 
 	@Override
 	public Instance next() {
-		Long l = (Long) this.keysIt.next();
+		Long l = this.keysIt.next();
 		Sentence sent = this.sentences.sentences.get(l);
 		Instance i = new Instance(sent.text, sent.articleID, l, null);
 		return i;
