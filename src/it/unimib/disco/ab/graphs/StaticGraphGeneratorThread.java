@@ -36,7 +36,7 @@ public class StaticGraphGeneratorThread extends Thread {
 					int nSentenceEntity2 = 0;
 					while(sentencePointer1 < tse1.size() && sentencePointer2 < tse2.size()){
 						if(tse1.get(sentencePointer1) == tse2.get(sentencePointer2) ){
-							if(this.monitor.sentenceTopicRelation.senteceTopicRelation.get(sentencePointer1) == topic){
+							if(this.monitor.sentenceTopicRelation.senteceTopicRelation.get(tse1.get(sentencePointer1)) == topic){
 								nSentenceEntity1++;
 								nSentenceEntity2++;
 								intersection++;
@@ -45,13 +45,13 @@ public class StaticGraphGeneratorThread extends Thread {
 							sentencePointer2++;
 							
 						}else if(tse1.get(sentencePointer1) > tse2.get(sentencePointer2)){
-							sentencePointer2++;
-							if(this.monitor.sentenceTopicRelation.senteceTopicRelation.get(sentencePointer2) == topic)
+							if(this.monitor.sentenceTopicRelation.senteceTopicRelation.get(tse2.get(sentencePointer2)) == topic)
 								nSentenceEntity2++;
+							sentencePointer2++;
 						}else{
-							sentencePointer1++;
-							if(this.monitor.sentenceTopicRelation.senteceTopicRelation.get(sentencePointer1) == topic)
+							if(this.monitor.sentenceTopicRelation.senteceTopicRelation.get(tse1.get(sentencePointer1)) == topic)
 								nSentenceEntity1++;
+							sentencePointer1++;
 						}
 					}
 					

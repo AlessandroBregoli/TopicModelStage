@@ -6,6 +6,9 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
 
+import it.unimib.disco.ab.graphs.StaticGraphGenerator;
+import it.unimib.disco.ab.malletLDA.CustomTopicModel;
+import it.unimib.disco.ab.malletLDA.ParallelInferencer;
 import it.unimib.disco.ab.ner.CustomEntity;
 import it.unimib.disco.ab.ner.ParallelNer;
 import it.unimib.disco.ab.textPreprocessing.SentenceContainer;
@@ -13,8 +16,9 @@ import it.unimib.disco.ab.textPreprocessing.SentenceSplitter;
 import it.unimib.disco.ab.xmlParser.DirectoryScanner;
 
 public class Workflow {
-	public static void main(String[] args){
-		DirectoryScanner ds = new DirectoryScanner(new File("/home/alessandro/Dropbox/Stage/Dataset/reuters toXml"));
+	public static void main(String[] args) throws Exception{
+		int nThreads = 3;
+		DirectoryScanner ds = new DirectoryScanner(new File("/home/alessandro/Dropbox/Stage/Dataset/miniset"));
 		ds.startScan();
 		
 		SentenceContainer sc = new SentenceSplitter(ds.getArticles());
@@ -42,15 +46,23 @@ public class Workflow {
 		TreeMap<CustomEntity, LinkedList<Long>> entities = null;
 		try {
 			ParallelNer pn = new ParallelNer(serialNer, sc);
-			entities = pn.getEntities(4);
+			entities = pn.getEntities(nThreads);
 		} catch (ClassCastException | ClassNotFoundException | IOException e) {
 			e.printStackTrace();
 		}
-		Iterator<CustomEntity> it =  entities.keySet().iterator();
+		/*Iterator<CustomEntity> it =  entities.keySet().iterator();
 		while(it.hasNext()){
 			CustomEntity ce = it.next();
 			System.out.println(ce.entityString);
-		}
+		}*/
+		CustomTopicModel ctm = new CustomTopicModel(sc);
+		ctm.modella(50, nThreads);
+		
+		ParallelInferencer pi = new ParallelInferencer(ctm.getInferencer(), sc, 1/50);
+		
+		StaticGraphGenerator sgg = new StaticGraphGenerator(entities, pi.getSenteceTopicRelation(nThreads), ctm.getNTopics());
+		sgg.waitUntillEnd(nThreads);
+		
 	}
 
 }

@@ -11,14 +11,15 @@ import cc.mallet.topics.TopicInferencer;
 import cc.mallet.types.Instance;
 import cc.mallet.types.InstanceList;
 
-public class Parallelnferencer {
+public class ParallelInferencer {
 	private int nThreads;
 	SentenceTopicRelation senteceTopicRelation;
 	TopicInferencer inferencer;
 	InstanceList sentences;
 	Iterator<Instance> iter;
 	double purity;
-	public Parallelnferencer(TopicInferencer inferencer, SentenceContainer sentences, double purity){
+	public ParallelInferencer(TopicInferencer inferencer, SentenceContainer sentences, double purity){
+		this.senteceTopicRelation = new SentenceTopicRelation();
 		this.senteceTopicRelation.senteceTopicRelation = new TreeMap<Long, Integer>();
 		this.inferencer = inferencer;
 		this.sentences = InstancesBuilder.getInstances(sentences);
@@ -38,7 +39,7 @@ public class Parallelnferencer {
 		this.nThreads = nThreads;
 		this.iter = this.sentences.iterator();
 		for(int i = this.nThreads; i > 0; i--){
-			new ParallelnferencerThread(this).start();
+			new ParallelInferencerThread(this).start();
 		}
 		while(this.nThreads > 0){
 			try {

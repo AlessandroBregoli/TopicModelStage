@@ -3,12 +3,12 @@ package it.unimib.disco.ab.malletLDA;
 import cc.mallet.topics.TopicInferencer;
 import cc.mallet.types.Instance;
 
-public class ParallelnferencerThread extends Thread{
-	private Parallelnferencer monitor;
+public class ParallelInferencerThread extends Thread{
+	private ParallelInferencer monitor;
 	public static final int numIteration = 50;
 	public static final int thinning = 5;
 	public static final int burIn = 25;
-	public ParallelnferencerThread(Parallelnferencer monitor){
+	public ParallelInferencerThread(ParallelInferencer monitor){
 		this.monitor = monitor;
 	}
 	
@@ -22,9 +22,9 @@ public class ParallelnferencerThread extends Thread{
 				return;
 			}
 			long sentenceID = (long) sentence.getName();
-			double[] infer = inferencer.getSampledDistribution(sentence, ParallelnferencerThread.numIteration, 
-																		 ParallelnferencerThread.thinning, 
-																		 ParallelnferencerThread.burIn);
+			double[] infer = inferencer.getSampledDistribution(sentence, ParallelInferencerThread.numIteration, 
+																		 ParallelInferencerThread.thinning, 
+																		 ParallelInferencerThread.burIn);
 			int maxID = 0;
 			for(int i = 1; i < infer.length; i++){
 				if(infer[i] > infer[maxID])

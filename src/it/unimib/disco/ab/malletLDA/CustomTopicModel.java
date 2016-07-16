@@ -18,7 +18,7 @@ public class CustomTopicModel {
 		this.dataSet = dataSet;
 	}
 	
-	public void modella(int nTopics){
+	public void modella(int nTopics, int nThreads){
 		InstanceList instances = InstancesBuilder.getInstances(this.dataSet);
 		this.nTopics = nTopics;
 		double alpha = 0.001* nTopics;
@@ -29,6 +29,7 @@ public class CustomTopicModel {
 		this.model.optimizeInterval = 0;
 		this.model.setNumIterations(1000);
 		this.model.addInstances(instances);	
+		this.model.setNumThreads(nThreads);
 		try {
 			this.model.estimate();
 		} catch (IOException e) {}
