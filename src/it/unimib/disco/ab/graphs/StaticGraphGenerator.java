@@ -2,30 +2,30 @@ package it.unimib.disco.ab.graphs;
 
 import it.unimib.disco.ab.entityTopicStatistics.NerStats;
 import it.unimib.disco.ab.entityTopicStatistics.TopicStat;
+import it.unimib.disco.ab.malletLDA.SentenceTopicRelation;
 import it.unimib.disco.ab.ner.CustomEntity;
 
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.TreeMap;
 
 public class StaticGraphGenerator {
-	NerStats nerStats;
 	private int nThreads;
-	private StaticGraphGeneratorThread[] thread;
 	private int topicIndex;
 	public EntityTopicGraph[] graphs;
-	public StaticGraphGenerator(NerStats nerStats, int nThreads) throws Exception{
-		this.nerStats = nerStats;
-		if(nThreads <= 0){
-			throw new Exception("I thread  devono essere positivi");
-		}
+	TreeMap<CustomEntity, LinkedList<Long>> entities;
+	SentenceTopicRelation sentenceTopicRelation;
+	int nTopics;
+	Iterator<CustomEntity> entityIterator;
+	public StaticGraphGenerator(TreeMap<CustomEntity, LinkedList<Long>> entities, SentenceTopicRelation topicSentenceRelation, int nTopics) throws Exception{
+		this.entities = entities;
+		this.nTopics = nTopics;
+		this.sentenceTopicRelation = topicSentenceRelation;
 		this.nThreads = nThreads;
-		this.thread = new StaticGraphGeneratorThread[this.nThreads];
-		this.graphs = new EntityTopicGraph[this.nerStats.relation.get(this.nerStats.relation.firstKey()).getNTopics()];
-		this.topicIndex = 0;
-		for(int i = 0; i < this.nThreads; i++){
-			this.thread[i] = new StaticGraphGeneratorThread(this);
-			this.thread[i].start();
-			
-		}
+		this.graphs = new EntityTopicGraph[this.nTopics];
+		for(int topic = 0; topic < this.nTopics; topic++)
+			this.graphs[topic] = new EntityTopicGraph(topic);
+		
 		
 	}
 	
@@ -34,7 +34,25 @@ public class StaticGraphGenerator {
 	 * Si potrebe fare un metodo non bloccante ma tanto è probabile che si voglia usare il 100% della CPU
 	 * per completare questo processo alla massima velocità
 	 */
-	public synchronized void waitUntillEnd(){
+	public synchronized void waitUntillEnd(int nThreads){
+		this.nThreads = nThreads;
+		this.topicIndex = 0;
+		this.entityIterator = this.entities.keySet().iterator();
+		for(int i = nThreads; i > 0; i--){
+			new StaticGraphInitializerThread(this).start();
+			
+		}
+		while(this.nThreads > 0)
+			try {
+				wait();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		this.nThreads = nThreads;
+		for(int i = this.nThreads; i > 0; i--){
+			new StaticGraphGeneratorThread(this).start();
+			
+		}
 		while(this.nThreads > 0)
 			try {
 				wait();
@@ -54,6 +72,16 @@ public class StaticGraphGenerator {
 			notifyAll();
 			return -1;
 		}
+	}
+	
+	synchronized CustomEntity nextEntity(){
+		if(!this.entityIterator.hasNext()){
+			this.nThreads--;
+			notifyAll();
+			return null;
+		}
+		return this.entityIterator.next();
+		
 	}
 	
 }

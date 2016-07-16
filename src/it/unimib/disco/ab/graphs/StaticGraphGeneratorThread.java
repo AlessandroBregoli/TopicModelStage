@@ -1,6 +1,7 @@
 package it.unimib.disco.ab.graphs;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 import it.unimib.disco.ab.entityTopicStatistics.TopicStatTuple;
 import it.unimib.disco.ab.ner.CustomEntity;
@@ -17,57 +18,61 @@ public class StaticGraphGeneratorThread extends Thread {
 			int topic = this.monitor.nextTopic();
 			
 			if(topic == -1)
-				break;
-			System.err.println("Topic " + topic + ": " + this.monitor.nerStats.sentencePerTopic[topic]);
-			double epsilon = 1 / this.monitor.nerStats.sentencePerTopic[topic];
-			EntityTopicGraph graph = new EntityTopicGraph(topic);
-			for(CustomEntity e:this.monitor.nerStats.relation.keySet()){
-				if(this.monitor.nerStats.relation.get(e).getData().containsKey(topic)){
-					try {
-						graph.addVertex(e);
-					} catch (Exception e1) {}
-				}
-			}
-			graph.initializeMatrix();
-			for(int i = 0; i < (graph.vertexDictionary.size() - 1); i++ ){
-				ArrayList<TopicStatTuple> tse1 = this.monitor.nerStats.relation.get(graph.vertexDictionary.get(i)).getData().get(topic);
-				graph.adiacentMatrix[i][i] = 0.0;
-				for(int j = i+1; j < graph.vertexDictionary.size(); j++){
-					ArrayList<TopicStatTuple> tse2 = this.monitor.nerStats.relation.get(graph.vertexDictionary.get(j)).getData().get(topic);
+				return;
+			System.err.println("Topic " + topic);
+			//double epsilon = 1 / this.monitor.nerStats.sentencePerTopic[topic];
+			double epsilon = 1/this.monitor.sentenceTopicRelation.sentencePerTopic[topic];
+			
+			this.monitor.graphs[topic].initializeMatrix();
+			for(int i = 0; i < (this.monitor.graphs[topic].vertexDictionary.size() - 1); i++ ){
+				LinkedList<Long> tse1 = this.monitor.entities.get(this.monitor.graphs[topic].vertexDictionary.get(i));
+				this.monitor.graphs[topic].adiacentMatrix[i][i] = 0.0;
+				for(int j = i+1; j < this.monitor.graphs[topic].vertexDictionary.size(); j++){
+					LinkedList<Long> tse2 = this.monitor.entities.get(this.monitor.graphs[topic].vertexDictionary.get(j));
 					double intersection = 0.0;
 					int sentencePointer1 = 0;
 					int sentencePointer2 = 0;
+					int nSentenceEntity1 = 0;
+					int nSentenceEntity2 = 0;
 					while(sentencePointer1 < tse1.size() && sentencePointer2 < tse2.size()){
-						if(tse1.get(sentencePointer1).sentenceID == tse2.get(sentencePointer2).sentenceID){
-							intersection++;
+						if(tse1.get(sentencePointer1) == tse2.get(sentencePointer2) ){
+							if(this.monitor.sentenceTopicRelation.senteceTopicRelation.get(sentencePointer1) == topic){
+								nSentenceEntity1++;
+								nSentenceEntity2++;
+								intersection++;
+							}
 							sentencePointer1++;
 							sentencePointer2++;
-						}else if(tse1.get(sentencePointer1).sentenceID > tse2.get(sentencePointer2).sentenceID){
+							
+						}else if(tse1.get(sentencePointer1) > tse2.get(sentencePointer2)){
 							sentencePointer2++;
+							if(this.monitor.sentenceTopicRelation.senteceTopicRelation.get(sentencePointer2) == topic)
+								nSentenceEntity2++;
 						}else{
 							sentencePointer1++;
+							if(this.monitor.sentenceTopicRelation.senteceTopicRelation.get(sentencePointer1) == topic)
+								nSentenceEntity1++;
 						}
 					}
 					
 					
-					double pe1 = (double)tse1.size()/this.monitor.nerStats.sentencePerTopic[topic];
-					double pe2 = (double)tse2.size()/this.monitor.nerStats.sentencePerTopic[topic];
-					double pe1e2 = (double)intersection/this.monitor.nerStats.sentencePerTopic[topic];
-					double pe1ne2 = (double)(tse1.size() - intersection)/this.monitor.nerStats.sentencePerTopic[topic];
-					double pne1e2 = (double)(tse2.size() - intersection)/this.monitor.nerStats.sentencePerTopic[topic];
-					double pne1ne2 = (double) ( this.monitor.nerStats.sentencePerTopic[topic] - tse1.size() - tse2.size() + intersection) / this.monitor.nerStats.sentencePerTopic[topic];
+					double pe1 = (double)nSentenceEntity1/this.monitor.sentenceTopicRelation.sentencePerTopic[topic];
+					double pe2 = (double)nSentenceEntity2/this.monitor.sentenceTopicRelation.sentencePerTopic[topic];
+					double pe1e2 = (double)intersection/this.monitor.sentenceTopicRelation.sentencePerTopic[topic];
+					double pe1ne2 = (double)(nSentenceEntity1 - intersection)/this.monitor.sentenceTopicRelation.sentencePerTopic[topic];
+					double pne1e2 = (double)(nSentenceEntity2 - intersection)/this.monitor.sentenceTopicRelation.sentencePerTopic[topic];
+					double pne1ne2 = (double) ( this.monitor.sentenceTopicRelation.sentencePerTopic[topic] - nSentenceEntity1 - nSentenceEntity2 + intersection) / this.monitor.sentenceTopicRelation.sentencePerTopic[topic];
 					
 					//graph.adiacentMatrix[j][i]  = jointProbability * Math.log(jointProbability/(probTst1*probTst2))/Math.log(2);
-					graph.adiacentMatrix[j][i]  = pe1e2 * Math.log((pe1e2 + epsilon)/(pe1*pe2))/Math.log(2);
-					graph.adiacentMatrix[j][i]  += pe1ne2 * Math.log((pe1ne2 + epsilon)/(pe1*(1-pe2)))/Math.log(2);
-					graph.adiacentMatrix[j][i]  += pne1e2 * Math.log((pne1e2 + epsilon)/((1-pe1)*pe2))/Math.log(2);
-					graph.adiacentMatrix[j][i]  += pne1ne2 * Math.log((pne1ne2 + epsilon)/((1-pe1)*(1-pe2)))/Math.log(2);
+					this.monitor.graphs[topic].adiacentMatrix[j][i]  = pe1e2 * Math.log((pe1e2 + epsilon)/(pe1*pe2))/Math.log(2);
+					this.monitor.graphs[topic].adiacentMatrix[j][i]  += pe1ne2 * Math.log((pe1ne2 + epsilon)/(pe1*(1-pe2)))/Math.log(2);
+					this.monitor.graphs[topic].adiacentMatrix[j][i]  += pne1e2 * Math.log((pne1e2 + epsilon)/((1-pe1)*pe2))/Math.log(2);
+					this.monitor.graphs[topic].adiacentMatrix[j][i]  += pne1ne2 * Math.log((pne1ne2 + epsilon)/((1-pe1)*(1-pe2)))/Math.log(2);
 					//graph.adiacentMatrix[j][i] = Math.abs(graph.adiacentMatrix[j][i]);
-					graph.adiacentMatrix[i][j] = graph.adiacentMatrix[j][i];
+					this.monitor.graphs[topic].adiacentMatrix[i][j] = this.monitor.graphs[topic].adiacentMatrix[j][i];
 				}
 			}
-			this.monitor.graphs[topic] = graph;
-			graph.serializeForPajec("Topic" + topic + ".net");
+			this.monitor.graphs[topic].serializeForPajec("Topic" + topic + ".net");
 			
 		}
 	}

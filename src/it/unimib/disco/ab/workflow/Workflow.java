@@ -1,4 +1,4 @@
-package it.unimib.ab.workflow;
+package it.unimib.disco.ab.workflow;
 
 import java.io.BufferedReader;
 import java.io.File;

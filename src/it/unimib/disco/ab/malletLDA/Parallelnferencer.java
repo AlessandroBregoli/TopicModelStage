@@ -2,6 +2,8 @@ package it.unimib.disco.ab.malletLDA;
 
 import it.unimib.disco.ab.textPreprocessing.SentenceContainer;
 
+import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.TreeMap;
 
@@ -11,13 +13,13 @@ import cc.mallet.types.InstanceList;
 
 public class Parallelnferencer {
 	private int nThreads;
-	TreeMap<Long,Integer> senteceTopicRelation;
+	SentenceTopicRelation senteceTopicRelation;
 	TopicInferencer inferencer;
 	InstanceList sentences;
 	Iterator<Instance> iter;
 	double purity;
 	public Parallelnferencer(TopicInferencer inferencer, SentenceContainer sentences, double purity){
-		this.senteceTopicRelation = new TreeMap<Long, Integer>();
+		this.senteceTopicRelation.senteceTopicRelation = new TreeMap<Long, Integer>();
 		this.inferencer = inferencer;
 		this.sentences = InstancesBuilder.getInstances(sentences);
 		this.purity = purity;
@@ -32,7 +34,7 @@ public class Parallelnferencer {
 		return this.iter.next();
 	}
 	
-	public synchronized TreeMap<Long,Integer> getSenteceTopicRelation(int nThreads){
+	public synchronized SentenceTopicRelation getSenteceTopicRelation(int nThreads){
 		this.nThreads = nThreads;
 		this.iter = this.sentences.iterator();
 		for(int i = this.nThreads; i > 0; i--){
@@ -45,7 +47,12 @@ public class Parallelnferencer {
 		}
 		return this.senteceTopicRelation;
 	}
-	synchronized void addSenteceTopic(long sentenceID, int topic){
-		this.senteceTopicRelation.put(sentenceID, topic);
+	synchronized void addSenteceTopic(long sentenceID, int topic, int nTopics){
+		this.senteceTopicRelation.senteceTopicRelation.put(sentenceID, topic);
+		if(this.senteceTopicRelation.sentencePerTopic == null){
+			this.senteceTopicRelation.sentencePerTopic = new long[nTopics];
+			Arrays.fill(this.senteceTopicRelation.sentencePerTopic, 0);
+		}
+		this.senteceTopicRelation.sentencePerTopic[topic]++;
 	}
 }

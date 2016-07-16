@@ -31,7 +31,7 @@ public class ParallelnferencerThread extends Thread{
 					maxID = i;
 			}
 			if(infer[maxID] > purity){
-				this.monitor.addSenteceTopic(sentenceID, maxID);
+				this.monitor.addSenteceTopic(sentenceID, maxID, infer.length);
 			}
 		}
 	}

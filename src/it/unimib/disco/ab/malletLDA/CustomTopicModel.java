@@ -13,13 +13,14 @@ import cc.mallet.types.InstanceList;
 public class CustomTopicModel {
 	private SentenceContainer dataSet;
 	public ParallelTopicModel model;
+	private int nTopics;
 	public CustomTopicModel(SentenceContainer dataSet){
 		this.dataSet = dataSet;
 	}
 	
 	public void modella(int nTopics){
 		InstanceList instances = InstancesBuilder.getInstances(this.dataSet);
-		
+		this.nTopics = nTopics;
 		double alpha = 0.001* nTopics;
 		double beta = 0.01;
 		this.model = new ParallelTopicModel(nTopics, alpha, beta);
@@ -35,6 +36,9 @@ public class CustomTopicModel {
 	
 	public TopicInferencer getInferencer(){
 		return this.model.getInferencer();
+	}
+	public int getNTopics(){
+		return this.nTopics;
 	}
 
 }
