@@ -19,9 +19,10 @@ public class StaticGraphGeneratorThread extends Thread {
 			
 			if(topic == -1)
 				return;
-			System.err.println("Topic " + topic);
+			System.err.println("Topic " + topic + " " + this.monitor.sentenceTopicRelation.sentencePerTopic[topic]);
 			//double epsilon = 1 / this.monitor.nerStats.sentencePerTopic[topic];
-			double epsilon = 1/this.monitor.sentenceTopicRelation.sentencePerTopic[topic];
+			//double epsilon = (double)1/(Math.pow(this.monitor.sentenceTopicRelation.sentencePerTopic[topic],2));
+			double epsilon = Double.MIN_NORMAL;
 			
 			this.monitor.graphs[topic].initializeMatrix();
 			for(int i = 0; i < (this.monitor.graphs[topic].vertexDictionary.size() - 1); i++ ){
@@ -54,6 +55,16 @@ public class StaticGraphGeneratorThread extends Thread {
 							sentencePointer1++;
 						}
 					}
+					while(sentencePointer1 < tse1.size()){
+						if(this.monitor.sentenceTopicRelation.senteceTopicRelation.get(tse1.get(sentencePointer1)) == topic)
+							nSentenceEntity1++;
+						sentencePointer1++;
+					}
+					while(sentencePointer2 < tse2.size()){
+						if(this.monitor.sentenceTopicRelation.senteceTopicRelation.get(tse2.get(sentencePointer2)) == topic)
+							nSentenceEntity2++;
+						sentencePointer2++;
+					}
 					
 					
 					double pe1 = (double)nSentenceEntity1/this.monitor.sentenceTopicRelation.sentencePerTopic[topic];
@@ -62,6 +73,9 @@ public class StaticGraphGeneratorThread extends Thread {
 					double pe1ne2 = (double)(nSentenceEntity1 - intersection)/this.monitor.sentenceTopicRelation.sentencePerTopic[topic];
 					double pne1e2 = (double)(nSentenceEntity2 - intersection)/this.monitor.sentenceTopicRelation.sentencePerTopic[topic];
 					double pne1ne2 = (double) ( this.monitor.sentenceTopicRelation.sentencePerTopic[topic] - nSentenceEntity1 - nSentenceEntity2 + intersection) / this.monitor.sentenceTopicRelation.sentencePerTopic[topic];
+					
+					
+					
 					
 					//graph.adiacentMatrix[j][i]  = jointProbability * Math.log(jointProbability/(probTst1*probTst2))/Math.log(2);
 					this.monitor.graphs[topic].adiacentMatrix[j][i]  = pe1e2 * Math.log((pe1e2 + epsilon)/(pe1*pe2))/Math.log(2);

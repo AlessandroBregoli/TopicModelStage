@@ -1,5 +1,5 @@
 package it.prova;
-
+/*
 import it.unimib.disco.ab.entityTopicStatistics.NerStats;
 import it.unimib.disco.ab.entityTopicStatistics.TopicStat;
 import it.unimib.disco.ab.graphs.StaticGraphAnalyzer;
@@ -53,9 +53,6 @@ public class GUI1 {
 	private JFrame frame;
 	private JTextField textField;
 
-	/**
-	 * Launch the application.
-	 */
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -69,17 +66,11 @@ public class GUI1 {
 		});
 	}
 
-	/**
-	 * Create the application.
-	 */
 	public GUI1() {
 		initialize();
 		
 	}
 
-	/**
-	 * Initialize the contents of the frame.
-	 */
 	private void initialize() {
 		frame = new JFrame();
 		frame.setBounds(100, 100, 583, 300);
@@ -234,3 +225,4 @@ public class GUI1 {
 		
 	}
 }
+*/

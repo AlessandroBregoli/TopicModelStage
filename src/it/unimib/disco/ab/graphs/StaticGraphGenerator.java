@@ -83,5 +83,10 @@ public class StaticGraphGenerator {
 		return this.entityIterator.next();
 		
 	}
+	synchronized void updateVertexDictionary(CustomEntity ce, int topic){
+		try {
+			this.graphs[topic].addVertex(ce);
+		} catch (Exception e) {	e.printStackTrace();}
+	}
 	
 }

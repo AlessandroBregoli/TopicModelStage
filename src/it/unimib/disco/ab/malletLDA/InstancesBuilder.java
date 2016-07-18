@@ -46,7 +46,7 @@ public class InstancesBuilder {
 
 
         // Print out the features and the label
-        pipeList.add(new PrintInputAndTarget());
+        //pipeList.add(new PrintInputAndTarget());
         
         
         return new SerialPipes(pipeList);

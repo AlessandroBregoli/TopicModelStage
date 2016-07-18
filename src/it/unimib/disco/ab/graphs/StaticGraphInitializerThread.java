@@ -22,7 +22,7 @@ public class StaticGraphInitializerThread extends Thread{
 					entityTopicRelation[topic] = true;
 					i++;
 					try {
-						this.monitor.graphs[topic].addVertex(ce);
+						this.monitor.updateVertexDictionary(ce, topic);
 					} catch (Exception e) {	e.printStackTrace();}
 				}
 				if(i >= this.monitor.nTopics)

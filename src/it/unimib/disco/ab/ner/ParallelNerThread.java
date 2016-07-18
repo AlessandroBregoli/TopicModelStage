@@ -30,9 +30,9 @@ public class ParallelNerThread extends Thread {
 				}
 			}
 			this.monitor.sentencesAcquisition();{
-				Iterator it = nerMerge.iterator();
+				Iterator<CustomEntity> it = nerMerge.iterator();
 				while(it.hasNext()){
-					CustomEntity customEntity = (CustomEntity) it.next();
+					CustomEntity customEntity = it.next();
 		        	if(customEntity.entityClass.equals("0"))
 		        		continue;
 		        	LinkedList<Long> t = this.monitor.entities.get(customEntity);
@@ -42,11 +42,7 @@ public class ParallelNerThread extends Thread {
 		        		this.monitor.entities.put(customEntity, t);
 		        	}
 		        	else{
-		        		try {
-							t.add(sentenceID);
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
+						t.add(sentenceID);
 		        	}
 
 				}

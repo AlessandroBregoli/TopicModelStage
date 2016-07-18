@@ -1,21 +1,30 @@
 package it.unimib.disco.ab.graphs;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.TreeMap;
 
 import it.unimib.disco.ab.entityTopicStatistics.NerStats;
+import it.unimib.disco.ab.malletLDA.SentenceTopicRelation;
+import it.unimib.disco.ab.ner.CustomEntity;
+import it.unimib.disco.ab.textPreprocessing.SentenceContainer;
 
 public class StaticGraphAnalyzer {
-	NerStats entityTopicRelation;
+	SentenceContainer sentences;
 	EntityTopicGraph[] graphs;
 	private int nThreads;
 	private int analizedTopic;
 	ConnectedComponentSentences ccSentences[];
 	int minCCSize;
-	public StaticGraphAnalyzer(NerStats entityTopicRelation, EntityTopicGraph[] graphs, int minCCSize){
-		this.entityTopicRelation = entityTopicRelation;
+	TreeMap<CustomEntity, LinkedList<Long>> entities;
+	SentenceTopicRelation str;
+	public StaticGraphAnalyzer(SentenceContainer sentences, TreeMap<CustomEntity, LinkedList<Long>> entities, SentenceTopicRelation str, EntityTopicGraph[] graphs, int minCCSize){
+		this.sentences = sentences;
 		this.graphs = graphs;
 		this.ccSentences = new ConnectedComponentSentences[this.graphs.length];
 		this.minCCSize = minCCSize;
+		this.entities = entities;
+		this.str = str;
 	}
 	
 	public synchronized void analizeGraph(int nThreads){

@@ -7,6 +7,10 @@ import java.util.TreeMap;
 public class SentenceContainer {
 	public TreeMap<Long, Sentence> sentences;
 	
+	public SentenceContainer(){
+		this.sentences = new TreeMap<Long, Sentence>();
+	}
+	
 	public void filterUsingArray(String[] filteredWord){
 		for(long sentenceID: this.sentences.keySet()){
 			for(String s: filteredWord){
@@ -24,6 +28,16 @@ public class SentenceContainer {
 		}
 	}
 	private static String replaceAll(String string, String replace){
-		return string.replaceAll("\\b" + replace + "\\b", "");
+		return string.replaceAll("(?i)\\b" + replace + "\\b", "");
+	}
+	
+	@Override
+	public Object clone(){
+		SentenceContainer sc = new SentenceContainer();
+		for(long sentenceID: this.sentences.keySet()){
+			sc.sentences.put(sentenceID, (Sentence) this.sentences.get(sentenceID).clone());
+		}
+		return sc;
+		
 	}
 }

@@ -33,16 +33,16 @@ public class StaticGraphAnalyzerThread extends Thread{
 			BufferedWriter bw = new BufferedWriter(fw);
 			ConnectedComponentSentences ccSentences = new ConnectedComponentSentences();
 			ArrayList<ArrayList<Integer>> connectedComponents = GraphUtils.connectedComponents(this.monitor.graphs[topic].adiacentMatrix);
+			System.out.println("Number of cc for topic" + topic + ": " + connectedComponents.size());
 			for(ArrayList<Integer> connectedComponent:connectedComponents){
 				if(connectedComponent.size() < this.monitor.minCCSize){
-					System.out.println("CIAONE");
 					continue;
 				}
 				
 
 				TreeMap<Long, String> sentences = new TreeMap<Long, String>();
 				try {
-					bw.write("Componente connessa formata da: \n");
+					bw.write("Componente connessa formata da " + connectedComponent.size() + " elementi: \n");
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
@@ -53,14 +53,15 @@ public class StaticGraphAnalyzerThread extends Thread{
 					} catch (IOException e) {
 						e.printStackTrace();
 					}					
-					for(TopicStatTuple ele: this.monitor.entityTopicRelation.relation.get(this.monitor.graphs[topic].vertexDictionary.get(i)).getData().get(topic)){
-						sentences.put(ele.sentenceID, ele.sentenceText);
+					for(long sentenceID: this.monitor.entities.get(this.monitor.graphs[topic].vertexDictionary.get(i))){
+						if(this.monitor.str.senteceTopicRelation.get(sentenceID) == topic)
+							sentences.put(sentenceID, this.monitor.sentences.sentences.get(sentenceID).text);
 						
 					}
 					
 				}
 				try {
-					bw.write("\n");
+					bw.write("\n\n\n");
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
