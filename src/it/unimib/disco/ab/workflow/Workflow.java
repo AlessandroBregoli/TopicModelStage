@@ -26,8 +26,21 @@ public class Workflow {
 		System.out.println("Splitting sentences");
 		SentenceContainer sc = new SentenceSplitter(ds.getArticles());
 		SentenceContainer scCopy = (SentenceContainer) sc.clone();
+		String[] serialNer = {
+				"/home/alessandro/Schifezze/stanford-ner-2015-12-09/classifiers/english.all.3class.distsim.crf.ser.gz",
+				"/home/alessandro/Schifezze/stanford-ner-2015-12-09/classifiers/english.conll.4class.distsim.crf.ser.gz",
+				"/home/alessandro/Schifezze/stanford-ner-2015-12-09/classifiers/english.muc.7class.distsim.crf.ser.gz"
+		};
+		System.out.println("Using ner");
+		TreeMap<CustomEntity, LinkedList<Long>> entities = null;
+		try {
+			ParallelNer pn = new ParallelNer(serialNer, sc);
+			entities = pn.getEntities(nThreads);
+		} catch (ClassCastException | ClassNotFoundException | IOException e) {
+			e.printStackTrace();
+		}
 		System.out.println("Loading stop-words");
-		File sw = new File("/home/alessandro/Schifezze/mallet-2.0.7/stoplists/en.txt");
+		File sw = new File("/home/alessandro/Dropbox/Stage/Stoplist/en.txt");
 
 		LinkedList<String> stopWords= new LinkedList<String>();
 		try{
@@ -43,19 +56,7 @@ public class Workflow {
 		}catch(Exception e){}
 		System.out.println("Filtering sentences from stop-words");
 		sc.filterUsingList(stopWords);
-		String[] serialNer = {
-				"/home/alessandro/Schifezze/stanford-ner-2015-12-09/classifiers/english.all.3class.distsim.crf.ser.gz",
-				"/home/alessandro/Schifezze/stanford-ner-2015-12-09/classifiers/english.conll.4class.distsim.crf.ser.gz",
-				"/home/alessandro/Schifezze/stanford-ner-2015-12-09/classifiers/english.muc.7class.distsim.crf.ser.gz"
-		};
-		System.out.println("Using ner");
-		TreeMap<CustomEntity, LinkedList<Long>> entities = null;
-		try {
-			ParallelNer pn = new ParallelNer(serialNer, sc);
-			entities = pn.getEntities(nThreads);
-		} catch (ClassCastException | ClassNotFoundException | IOException e) {
-			e.printStackTrace();
-		}
+
 		/*Iterator<CustomEntity> it =  entities.keySet().iterator();
 		while(it.hasNext()){
 			CustomEntity ce = it.next();
