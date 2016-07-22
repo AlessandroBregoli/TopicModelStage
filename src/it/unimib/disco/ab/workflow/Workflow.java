@@ -21,7 +21,7 @@ public class Workflow {
 	public static void main(String[] args) throws Exception{
 		int nThreads = 3;
 		System.out.println("Loading xml");
-		DirectoryScanner ds = new DirectoryScanner(new File("/home/alessandro/Dropbox/Stage/Dataset/reuters toXml"));
+		DirectoryScanner ds = new DirectoryScanner(new File("/home/alessandro/Dropbox/Stage/Dataset/miniset"));
 		ds.startScan();
 		System.out.println("Splitting sentences");
 		SentenceContainer sc = new SentenceSplitter(ds.getArticles());
@@ -55,7 +55,9 @@ public class Workflow {
 		fr.close();
 		}catch(Exception e){}
 		System.out.println("Filtering sentences from stop-words");
-		sc.filterUsingList(stopWords);
+		sc.filterUsingIterator(stopWords.iterator(), nThreads);
+		System.out.println("Filtering sentences from eitities");
+		sc.filterUsingEntitySet(entities.keySet());
 
 		/*Iterator<CustomEntity> it =  entities.keySet().iterator();
 		while(it.hasNext()){
@@ -64,9 +66,9 @@ public class Workflow {
 		}*/
 		System.out.println("Using LDA");
 		CustomTopicModel ctm = new CustomTopicModel(sc);
-		ctm.modella(50, nThreads);
+		ctm.modella(30, nThreads);
 		System.out.println("Using inferencer");
-		ParallelInferencer pi = new ParallelInferencer(ctm.getInferencer(), sc,(double)1/50);
+		ParallelInferencer pi = new ParallelInferencer(ctm.getInferencer(), sc,(double)1/30);
 		SentenceTopicRelation str = pi.getSenteceTopicRelation(nThreads);
 		System.out.println("Using static graph generator");
 		StaticGraphGenerator sgg = new StaticGraphGenerator(entities, str, ctm.getNTopics());

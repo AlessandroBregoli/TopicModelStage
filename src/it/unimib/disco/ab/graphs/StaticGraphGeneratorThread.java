@@ -20,9 +20,10 @@ public class StaticGraphGeneratorThread extends Thread {
 			if(topic == -1)
 				return;
 			System.err.println("Topic " + topic + " " + this.monitor.sentenceTopicRelation.sentencePerTopic[topic]);
-			//double epsilon = 1 / this.monitor.nerStats.sentencePerTopic[topic];
 			//double epsilon = (double)1/(Math.pow(this.monitor.sentenceTopicRelation.sentencePerTopic[topic],2));
 			double epsilon = Double.MIN_NORMAL;
+			//double epsilon = 0.0;
+			
 			
 			this.monitor.graphs[topic].initializeMatrix();
 			for(int i = 0; i < (this.monitor.graphs[topic].vertexDictionary.size() - 1); i++ ){

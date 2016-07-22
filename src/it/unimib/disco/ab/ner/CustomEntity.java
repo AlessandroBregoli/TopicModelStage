@@ -18,7 +18,7 @@ public class CustomEntity implements Comparable, Serializable{
 	@Override
 	public int compareTo(Object o) {
 		CustomEntity c = (CustomEntity) o;
-		return c.entityString.toLowerCase().compareTo(this.entityString.toLowerCase()) != 0?c.entityString.toLowerCase().compareTo(this.entityString.toLowerCase()):c.entityClass.compareTo(this.entityClass);
+		return c.entityString.compareTo(this.entityString) != 0?c.entityString.compareTo(this.entityString):c.entityClass.compareTo(this.entityClass);
 		
 		
 	}
