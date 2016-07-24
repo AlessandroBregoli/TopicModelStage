@@ -22,7 +22,7 @@ public class Workflow {
 	public static void main(String[] args) throws Exception{
 		int nThreads = 3;
 		System.out.println("Loading xml");
-		DirectoryScanner ds = new DirectoryScanner(new File("/home/alessandro/Dropbox/Stage/Dataset/miniset"));
+		DirectoryScanner ds = new DirectoryScanner(new File("/home/alessandro/Dropbox/Stage/Dataset/reuters toXml"));
 		ds.startScan();
 		System.out.println("Splitting sentences");
 		SentenceContainer sc = new SentenceSplitter(ds.getArticles());

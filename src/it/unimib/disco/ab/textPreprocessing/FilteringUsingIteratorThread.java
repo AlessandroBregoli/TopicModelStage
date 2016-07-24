@@ -17,6 +17,7 @@ public class FilteringUsingIteratorThread extends Thread {
 				return;
 			Sentence sentence = this.monitor.sentences.get(sentenceID);
 			sentence.text = p.matcher(sentence.text).replaceAll(" ");
+			//System.out.println(sentence.text);
 		}
 	}
 }
