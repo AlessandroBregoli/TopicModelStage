@@ -16,7 +16,7 @@ public class FilteringUsingIteratorThread extends Thread {
 			if(sentenceID < 0)
 				return;
 			Sentence sentence = this.monitor.sentences.get(sentenceID);
-			sentence.text = p.matcher(sentence.text).replaceAll("");
+			sentence.text = p.matcher(sentence.text).replaceAll(" ");
 		}
 	}
 }

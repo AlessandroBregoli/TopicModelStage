@@ -12,6 +12,7 @@ import it.unimib.disco.ab.malletLDA.CustomTopicModel;
 import it.unimib.disco.ab.malletLDA.ParallelInferencer;
 import it.unimib.disco.ab.malletLDA.SentenceTopicRelation;
 import it.unimib.disco.ab.ner.CustomEntity;
+import it.unimib.disco.ab.ner.EntitySetIterator;
 import it.unimib.disco.ab.ner.ParallelNer;
 import it.unimib.disco.ab.textPreprocessing.SentenceContainer;
 import it.unimib.disco.ab.textPreprocessing.SentenceSplitter;
@@ -57,7 +58,8 @@ public class Workflow {
 		System.out.println("Filtering sentences from stop-words");
 		sc.filterUsingIterator(stopWords.iterator(), nThreads);
 		System.out.println("Filtering sentences from eitities");
-		sc.filterUsingEntitySet(entities.keySet());
+		EntitySetIterator esi = new EntitySetIterator(entities.keySet());
+		sc.filterUsingIterator(esi, nThreads);;
 
 		/*Iterator<CustomEntity> it =  entities.keySet().iterator();
 		while(it.hasNext()){
