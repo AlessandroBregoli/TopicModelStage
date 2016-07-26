@@ -31,7 +31,7 @@ public class StaticGraphGeneratorThread extends Thread {
 				this.monitor.graphs[topic].adiacentMatrix[i][i] = 0.0;
 				for(int j = i+1; j < this.monitor.graphs[topic].vertexDictionary.size(); j++){
 					LinkedList<Long> tse2 = this.monitor.entities.get(this.monitor.graphs[topic].vertexDictionary.get(j));
-					double intersection = 0.0;
+					int intersection = 0;
 					int sentencePointer1 = 0;
 					int sentencePointer2 = 0;
 					int nSentenceEntity1 = 0;
@@ -77,13 +77,11 @@ public class StaticGraphGeneratorThread extends Thread {
 					
 					
 					
-					
-					//graph.adiacentMatrix[j][i]  = jointProbability * Math.log(jointProbability/(probTst1*probTst2))/Math.log(2);
 					this.monitor.graphs[topic].adiacentMatrix[j][i]  = pe1e2 * Math.log((pe1e2 + epsilon)/(pe1*pe2))/Math.log(2);
 					this.monitor.graphs[topic].adiacentMatrix[j][i]  += pe1ne2 * Math.log((pe1ne2 + epsilon)/(pe1*(1-pe2)))/Math.log(2);
 					this.monitor.graphs[topic].adiacentMatrix[j][i]  += pne1e2 * Math.log((pne1e2 + epsilon)/((1-pe1)*pe2))/Math.log(2);
 					this.monitor.graphs[topic].adiacentMatrix[j][i]  += pne1ne2 * Math.log((pne1ne2 + epsilon)/((1-pe1)*(1-pe2)))/Math.log(2);
-					//graph.adiacentMatrix[j][i] = Math.abs(graph.adiacentMatrix[j][i]);
+					
 					this.monitor.graphs[topic].adiacentMatrix[i][j] = this.monitor.graphs[topic].adiacentMatrix[j][i];
 				}
 			}

@@ -42,7 +42,20 @@ public class ParallelNerThread extends Thread {
 		        		this.monitor.entities.put(customEntity, t);
 		        	}
 		        	else{
-						t.add(sentenceID);
+		        		if(t.getLast() <= sentenceID){
+		        			t.add(sentenceID);
+		        		}
+		        		else if(t.getFirst() > sentenceID){
+		        			t.addFirst(sentenceID);
+		        		}else{
+		        			for(int i = t.size()- 2; i >= 0; i--){
+		        				if(t.get(i) >= sentenceID){
+		        					t.add(i+1, sentenceID);
+		        					
+		        				}
+		        			}
+		        		}
+		        		
 		        	}
 
 				}

@@ -25,11 +25,10 @@ public class CustomTopicModel {
 		double beta = 0.01;
 		this.model = new ParallelTopicModel(nTopics, alpha, beta);
 		this.model.setSymmetricAlpha(true);
-		this.model.setNumThreads(nTopics);
+		this.model.setNumThreads(nThreads);
 		this.model.optimizeInterval = 0;
 		this.model.setNumIterations(1000);
 		this.model.addInstances(instances);	
-		this.model.setNumThreads(nThreads);
 		try {
 			this.model.estimate();
 		} catch (IOException e) {}
