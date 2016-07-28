@@ -21,6 +21,7 @@ import it.unimib.disco.ab.xmlParser.DirectoryScanner;
 public class Workflow {
 	public static void main(String[] args) throws Exception{
 		int nThreads = 3;
+		int nTopic = 30;
 		System.out.println("Loading xml");
 		DirectoryScanner ds = new DirectoryScanner(new File("/home/alessandro/Dropbox/Stage/Dataset/reuters toXml"));
 		ds.startScan();
@@ -68,9 +69,9 @@ public class Workflow {
 		}*/
 		System.out.println("Using LDA");
 		CustomTopicModel ctm = new CustomTopicModel(sc);
-		ctm.modella(30, nThreads);
+		ctm.modella(nTopic, nThreads);
 		System.out.println("Using inferencer");
-		ParallelInferencer pi = new ParallelInferencer(ctm.getInferencer(), sc,(double)1/30);
+		ParallelInferencer pi = new ParallelInferencer(ctm.getInferencer(), sc,0);
 		SentenceTopicRelation str = pi.getSenteceTopicRelation(nThreads);
 		System.out.println("Using static graph generator");
 		StaticGraphGenerator sgg = new StaticGraphGenerator(entities, str, ctm.getNTopics());

@@ -5,8 +5,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import edu.stanford.nlp.util.Triple;
-import it.unimib.disco.ab.entityTopicStatistics.TopicStat;
-import it.unimib.disco.ab.malletLDA.InstanceSourceContainer;
 import it.unimib.disco.ab.textPreprocessing.Sentence;
 
 public class ParallelNerThread extends Thread {
@@ -23,6 +21,7 @@ public class ParallelNerThread extends Thread {
 				return;
 			Sentence sentence = this.monitor.sentences.sentences.get(sentenceID);
 			NerMerge nerMerge = new NerMerge(sentence.text);
+			
 			for(int i = 0; i < this.monitor.classifier.length; i++){
 				List<Triple<String,Integer,Integer>> out = this.monitor.classifier[i].classifyToCharacterOffsets(sentence.text);
 				for(Triple<String,Integer,Integer> triple: out){
@@ -35,6 +34,7 @@ public class ParallelNerThread extends Thread {
 					CustomEntity customEntity = it.next();
 		        	if(customEntity.entityClass.equals("0"))
 		        		continue;
+		        	
 		        	LinkedList<Long> t = this.monitor.entities.get(customEntity);
 		        	if(t == null){
 		        		t = new LinkedList<Long>();
@@ -45,15 +45,17 @@ public class ParallelNerThread extends Thread {
 		        		if(t.getLast() <= sentenceID){
 		        			t.add(sentenceID);
 		        		}
-		        		else if(t.getFirst() > sentenceID){
+		        		else{ if(t.getFirst() >= sentenceID){
 		        			t.addFirst(sentenceID);
 		        		}else{
 		        			for(int i = t.size()- 2; i >= 0; i--){
-		        				if(t.get(i) >= sentenceID){
+		        				if(t.get(i) <= sentenceID){
 		        					t.add(i+1, sentenceID);
+		        					break;
 		        					
 		        				}
 		        			}
+		        		}
 		        		}
 		        		
 		        	}

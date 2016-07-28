@@ -3,6 +3,7 @@ package it.unimib.disco.ab.graphs;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
+import edu.stanford.nlp.ling.CoreAnnotations.PrevChildAnnotation;
 import it.unimib.disco.ab.entityTopicStatistics.TopicStatTuple;
 import it.unimib.disco.ab.ner.CustomEntity;
 
@@ -23,12 +24,13 @@ public class StaticGraphGeneratorThread extends Thread {
 			//double epsilon = (double)1/(Math.pow(this.monitor.sentenceTopicRelation.sentencePerTopic[topic],2));
 			double epsilon = Double.MIN_NORMAL;
 			//double epsilon = 0.0;
-			
-			
+		
+		
 			this.monitor.graphs[topic].initializeMatrix();
 			for(int i = 0; i < (this.monitor.graphs[topic].vertexDictionary.size() - 1); i++ ){
 				LinkedList<Long> tse1 = this.monitor.entities.get(this.monitor.graphs[topic].vertexDictionary.get(i));
 				this.monitor.graphs[topic].adiacentMatrix[i][i] = 0.0;
+				
 				for(int j = i+1; j < this.monitor.graphs[topic].vertexDictionary.size(); j++){
 					LinkedList<Long> tse2 = this.monitor.entities.get(this.monitor.graphs[topic].vertexDictionary.get(j));
 					int intersection = 0;
@@ -37,7 +39,7 @@ public class StaticGraphGeneratorThread extends Thread {
 					int nSentenceEntity1 = 0;
 					int nSentenceEntity2 = 0;
 					while(sentencePointer1 < tse1.size() && sentencePointer2 < tse2.size()){
-						if(tse1.get(sentencePointer1) == tse2.get(sentencePointer2) ){
+						if(tse1.get(sentencePointer1).equals(tse2.get(sentencePointer2))){
 							if(this.monitor.sentenceTopicRelation.senteceTopicRelation.get(tse1.get(sentencePointer1)) == topic){
 								nSentenceEntity1++;
 								nSentenceEntity2++;
@@ -46,7 +48,7 @@ public class StaticGraphGeneratorThread extends Thread {
 							sentencePointer1++;
 							sentencePointer2++;
 							
-						}else if(tse1.get(sentencePointer1) > tse2.get(sentencePointer2)){
+						}else if(tse1.get(sentencePointer1).compareTo(tse2.get(sentencePointer2)) > 0 ){
 							if(this.monitor.sentenceTopicRelation.senteceTopicRelation.get(tse2.get(sentencePointer2)) == topic)
 								nSentenceEntity2++;
 							sentencePointer2++;
@@ -84,7 +86,17 @@ public class StaticGraphGeneratorThread extends Thread {
 					
 					this.monitor.graphs[topic].adiacentMatrix[i][j] = this.monitor.graphs[topic].adiacentMatrix[j][i];
 				}
-			}
+			}/*
+			double mean = 0;
+			for(int i = 0; i < this.monitor.graphs[topic].adiacentMatrix.length; i++)
+				for(int j = 0; j < this.monitor.graphs[topic].adiacentMatrix.length; j++)
+					mean += this.monitor.graphs[topic].adiacentMatrix[i][j];
+			mean /= this.monitor.graphs[topic].adiacentMatrix.length * this.monitor.graphs[topic].adiacentMatrix.length;
+			for(int i = 0; i < this.monitor.graphs[topic].adiacentMatrix.length; i++)
+				for(int j = 0; j < this.monitor.graphs[topic].adiacentMatrix.length; j++)
+					if(this.monitor.graphs[topic].adiacentMatrix[i][j] <=  mean)
+						this.monitor.graphs[topic].adiacentMatrix[i][j] = 0;
+				*/	
 			this.monitor.graphs[topic].serializeForPajec("Topic" + topic + ".net");
 			
 		}

@@ -21,7 +21,7 @@ public class NerMerge implements Iterable<CustomEntity> {
 		return findPositionRic(value, 0, this.indices.size() - 1);
 	}
 	private int findPositionRic(int value, int index1, int index2){
-		if(index2 <= index1)
+		if(index2 < index1)
 			return index1;
 		if(this.indices.get((index2 + index1)/2) == value){
 			return -1; 
