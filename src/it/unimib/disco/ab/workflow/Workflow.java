@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
 
+import it.unimib.disco.ab.graphs.EntityTopicGraph;
 import it.unimib.disco.ab.graphs.StaticGraphAnalyzer;
 import it.unimib.disco.ab.graphs.StaticGraphGenerator;
 import it.unimib.disco.ab.malletLDA.CustomTopicModel;
@@ -23,7 +24,7 @@ public class Workflow {
 		int nThreads = 3;
 		int nTopic = 30;
 		System.out.println("Loading xml");
-		DirectoryScanner ds = new DirectoryScanner(new File("/home/alessandro/Dropbox/Stage/Dataset/reuters toXml"));
+		DirectoryScanner ds = new DirectoryScanner(new File("/home/alessandro/Dropbox/Stage/Dataset/miniset"));
 		ds.startScan();
 		System.out.println("Splitting sentences");
 		SentenceContainer sc = new SentenceSplitter(ds.getArticles());
@@ -76,9 +77,9 @@ public class Workflow {
 		System.out.println("Using static graph generator");
 		StaticGraphGenerator sgg = new StaticGraphGenerator(entities, str, ctm.getNTopics());
 		sgg.waitUntillEnd(nThreads);
-		System.out.println("Using static graph analyzer");
+		/*System.out.println("Using static graph analyzer");
 		StaticGraphAnalyzer sga = new StaticGraphAnalyzer(scCopy, entities, str, sgg.graphs, 2);
-		sga.analizeGraph(nThreads);
+		sga.analizeGraph(nThreads);*/
 	}
 
 }

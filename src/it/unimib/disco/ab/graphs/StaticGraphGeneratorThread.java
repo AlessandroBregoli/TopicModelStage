@@ -77,16 +77,18 @@ public class StaticGraphGeneratorThread extends Thread {
 					double pne1e2 = (double)(nSentenceEntity2 - intersection)/this.monitor.sentenceTopicRelation.sentencePerTopic[topic];
 					double pne1ne2 = (double) ( this.monitor.sentenceTopicRelation.sentencePerTopic[topic] - nSentenceEntity1 - nSentenceEntity2 + intersection) / this.monitor.sentenceTopicRelation.sentencePerTopic[topic];
 					
-					
-					
+					this.monitor.graphs[topic].adiacentMatrix[j][i] = 0;
+					/*if(pe1e2 > 0 && pe1ne2 > 0 && pne1e2 > 0 && pne1ne2 > 0){
+						
+					}*/
 					this.monitor.graphs[topic].adiacentMatrix[j][i]  = pe1e2 * Math.log((pe1e2 + epsilon)/(pe1*pe2))/Math.log(2);
 					this.monitor.graphs[topic].adiacentMatrix[j][i]  += pe1ne2 * Math.log((pe1ne2 + epsilon)/(pe1*(1-pe2)))/Math.log(2);
 					this.monitor.graphs[topic].adiacentMatrix[j][i]  += pne1e2 * Math.log((pne1e2 + epsilon)/((1-pe1)*pe2))/Math.log(2);
 					this.monitor.graphs[topic].adiacentMatrix[j][i]  += pne1ne2 * Math.log((pne1ne2 + epsilon)/((1-pe1)*(1-pe2)))/Math.log(2);
-					
 					this.monitor.graphs[topic].adiacentMatrix[i][j] = this.monitor.graphs[topic].adiacentMatrix[j][i];
 				}
-			}/*
+			}
+			/*
 			double mean = 0;
 			for(int i = 0; i < this.monitor.graphs[topic].adiacentMatrix.length; i++)
 				for(int j = 0; j < this.monitor.graphs[topic].adiacentMatrix.length; j++)
@@ -96,8 +98,9 @@ public class StaticGraphGeneratorThread extends Thread {
 				for(int j = 0; j < this.monitor.graphs[topic].adiacentMatrix.length; j++)
 					if(this.monitor.graphs[topic].adiacentMatrix[i][j] <=  mean)
 						this.monitor.graphs[topic].adiacentMatrix[i][j] = 0;
-				*/	
-			this.monitor.graphs[topic].serializeForPajec("Topic" + topic + ".net");
+			*/		
+			//this.monitor.graphs[topic].serializeForPajec("Topic" + topic + ".net");
+			this.monitor.graphs[topic].serializeForJava("Topic" + topic + ".dat");
 			
 		}
 	}
