@@ -1,13 +1,5 @@
 package it.unimib.disco.ab.workflow;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.*;
-
-import it.unimib.disco.ab.graphs.EntityTopicGraph;
-import it.unimib.disco.ab.graphs.StaticGraphAnalyzer;
 import it.unimib.disco.ab.graphs.StaticGraphGenerator;
 import it.unimib.disco.ab.malletLDA.CustomTopicModel;
 import it.unimib.disco.ab.malletLDA.ParallelInferencer;
@@ -19,21 +11,31 @@ import it.unimib.disco.ab.textPreprocessing.SentenceContainer;
 import it.unimib.disco.ab.textPreprocessing.SentenceSplitter;
 import it.unimib.disco.ab.xmlParser.DirectoryScanner;
 
-public class Workflow {
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.LinkedList;
+import java.util.TreeMap;
+
+public class WorkflowForServer {
 	public static void main(String[] args) throws Exception{
-		int nThreads = 3;
-		int nTopic = 30;
+		if(args.length < 5){
+			System.out.println("Inserire i seguenti parametri: [numero Thread] [numero topics] [Cartella dataset] [file stopword] [Files ner]");
+				return;
+		}
+		int nThreads = Integer.parseInt(args[0]);
+		int nTopic = Integer.parseInt(args[1]);
 		System.out.println("Loading xml");
-		DirectoryScanner ds = new DirectoryScanner(new File("/home/alessandro/MEGAsync/Stage/Dataset/reuters toXml"));
+		DirectoryScanner ds = new DirectoryScanner(new File(args[2]));
 		ds.startScan();
 		System.out.println("Splitting sentences");
 		SentenceContainer sc = new SentenceSplitter(ds.getArticles());
 		SentenceContainer scCopy = (SentenceContainer) sc.clone();
-		String[] serialNer = {
-				"/home/alessandro/Schifezze/stanford-ner-2015-12-09/classifiers/english.all.3class.distsim.crf.ser.gz",
-				"/home/alessandro/Schifezze/stanford-ner-2015-12-09/classifiers/english.conll.4class.distsim.crf.ser.gz",
-				"/home/alessandro/Schifezze/stanford-ner-2015-12-09/classifiers/english.muc.7class.distsim.crf.ser.gz"
-		};
+		String[] serialNer = new String[args.length - 4];
+		for(int i = 0; i  < serialNer.length; i++){
+			serialNer[i] = args[4 + i]; 
+		}
 		System.out.println("Using ner");
 		TreeMap<CustomEntity, LinkedList<Long>> entities = null;
 		try {
@@ -43,7 +45,7 @@ public class Workflow {
 			e.printStackTrace();
 		}
 		System.out.println("Loading stop-words");
-		File sw = new File("/home/alessandro/MEGAsync/Stage/Stoplist/en.txt");
+		File sw = new File(args[3]);
 
 		LinkedList<String> stopWords= new LinkedList<String>();
 		try{
@@ -81,5 +83,4 @@ public class Workflow {
 		StaticGraphAnalyzer sga = new StaticGraphAnalyzer(scCopy, entities, str, sgg.graphs, 2);
 		sga.analizeGraph(nThreads);*/
 	}
-
 }

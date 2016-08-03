@@ -1,4 +1,7 @@
 package it.prova;
+class GUI1{
+	
+}
 /*
 import it.unimib.disco.ab.entityTopicStatistics.NerStats;
 import it.unimib.disco.ab.entityTopicStatistics.TopicStat;
