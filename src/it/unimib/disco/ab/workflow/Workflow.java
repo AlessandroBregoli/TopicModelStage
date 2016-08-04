@@ -21,19 +21,38 @@ import it.unimib.disco.ab.xmlParser.DirectoryScanner;
 
 public class Workflow {
 	public static void main(String[] args) throws Exception{
-		int nThreads = 3;
-		int nTopic = 30;
-		System.out.println("Loading xml");
-		DirectoryScanner ds = new DirectoryScanner(new File("/home/alessandro/MEGAsync/Stage/Dataset/reuters toXml"));
-		ds.startScan();
-		System.out.println("Splitting sentences");
-		SentenceContainer sc = new SentenceSplitter(ds.getArticles());
-		SentenceContainer scCopy = (SentenceContainer) sc.clone();
 		String[] serialNer = {
 				"/home/alessandro/Schifezze/stanford-ner-2015-12-09/classifiers/english.all.3class.distsim.crf.ser.gz",
 				"/home/alessandro/Schifezze/stanford-ner-2015-12-09/classifiers/english.conll.4class.distsim.crf.ser.gz",
 				"/home/alessandro/Schifezze/stanford-ner-2015-12-09/classifiers/english.muc.7class.distsim.crf.ser.gz"
 		};
+		Workflow.startWorkflow(3, 30, "/home/alessandro/MEGAsync/Stage/Dataset/reuters toXml", "/home/alessandro/MEGAsync/Stage/Stoplist/en-preNer.txt", "/home/alessandro/MEGAsync/Stage/Stoplist/en.txt", serialNer);
+	}
+	public static void startWorkflow(int nThreads, int nTopic, String datasetFolder, String prenerStopWordFile, String stopWordFile, String[] serialNer) throws Exception{
+		
+		System.out.println("Loading xml");
+		DirectoryScanner ds = new DirectoryScanner(new File(datasetFolder));
+		ds.startScan();
+		System.out.println("Splitting sentences");
+		SentenceContainer sc = new SentenceSplitter(ds.getArticles());
+		SentenceContainer scCopy = (SentenceContainer) sc.clone();
+		System.out.println("Loading pre-ner stopwords");
+		File sw = new File(prenerStopWordFile);
+		LinkedList<String> stopWords= new LinkedList<String>();
+		try{
+		FileReader fr = new FileReader(sw);
+		BufferedReader br = new BufferedReader(fr);
+		
+		String stopword;
+		while((stopword = br.readLine())!=null){
+			stopWords.add(stopword);
+		}
+		br.close();
+		fr.close();
+		}catch(Exception e){}
+		System.out.println("Filtering sentences from pre-ner stopwords");
+		sc.filterUsingIterator(stopWords.iterator(), nThreads);
+		
 		System.out.println("Using ner");
 		TreeMap<CustomEntity, LinkedList<Long>> entities = null;
 		try {
@@ -43,9 +62,9 @@ public class Workflow {
 			e.printStackTrace();
 		}
 		System.out.println("Loading stop-words");
-		File sw = new File("/home/alessandro/MEGAsync/Stage/Stoplist/en.txt");
+		sw = new File(stopWordFile);
 
-		LinkedList<String> stopWords= new LinkedList<String>();
+		stopWords= new LinkedList<String>();
 		try{
 		FileReader fr = new FileReader(sw);
 		BufferedReader br = new BufferedReader(fr);
