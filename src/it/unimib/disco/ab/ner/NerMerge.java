@@ -6,7 +6,7 @@ import java.util.Iterator;
 import edu.stanford.nlp.util.Triple;
 
 public class NerMerge implements Iterable<CustomEntity> {
-	private ArrayList<Integer> indices = new ArrayList();
+	private ArrayList<Integer> indices = new ArrayList<Integer>();
 	private ArrayList<String> labels = new ArrayList<String>();
 	private String sentence;
 	public NerMerge(String sentence){

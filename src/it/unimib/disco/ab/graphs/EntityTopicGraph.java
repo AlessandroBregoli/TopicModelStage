@@ -127,6 +127,7 @@ public class EntityTopicGraph implements Serializable{
 			for(int j = i+1; j < this.adiacentMatrix.length; j++){
 				if(this.adiacentMatrix[i][j] < filtValue)
 					this.adiacentMatrix[i][j] = 0;
+					this.adiacentMatrix[j][i] = 0;
 			}
 	}
 
