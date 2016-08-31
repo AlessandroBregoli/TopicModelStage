@@ -61,7 +61,7 @@ public class EntityTopicGraph implements Serializable{
 			BufferedWriter bw = new BufferedWriter(fw);
 			bw.write("*Vertices " + this.vertexDictionary.size() + "\n");
 			for(int i = 0; i < this.vertexDictionary.size(); i++){
-				for(int j = 0; j < this.vertexDictionary.size(); i++){
+				for(int j = 0; j < this.vertexDictionary.size(); j++){
 					if(this.adiacentMatrix[i][j] > 0){
 						bw.write(" " + (i +1) + " \"" + this.vertexDictionary.get(i).entityString + "\"\n");
 						break;

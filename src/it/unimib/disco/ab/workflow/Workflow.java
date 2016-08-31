@@ -26,7 +26,7 @@ public class Workflow {
 				"/home/alessandro/Schifezze/stanford-ner-2015-12-09/classifiers/english.conll.4class.distsim.crf.ser.gz",
 				"/home/alessandro/Schifezze/stanford-ner-2015-12-09/classifiers/english.muc.7class.distsim.crf.ser.gz"
 		};
-		Workflow.startWorkflow(3, 1, "/home/alessandro/MEGAsync/Stage/Dataset/miniset", "/home/alessandro/MEGAsync/Stage/Stoplist/en-preNer.txt", "/home/alessandro/MEGAsync/Stage/Stoplist/en.txt", serialNer);
+		Workflow.startWorkflow(3, 30, "/home/alessandro/MEGAsync/Stage/Dataset/miniset", "/home/alessandro/MEGAsync/Stage/Stoplist/en-preNer.txt", "/home/alessandro/MEGAsync/Stage/Stoplist/en.txt", serialNer);
 	}
 	public static void startWorkflow(int nThreads, int nTopic, String datasetFolder, String prenerStopWordFile, String stopWordFile, String[] serialNer) throws Exception{
 		
@@ -76,11 +76,12 @@ public class Workflow {
 		br.close();
 		fr.close();
 		}catch(Exception e){}
-		System.out.println("Filtering sentences from stop-words");
-		sc.filterUsingIterator(stopWords.iterator(), nThreads);
 		System.out.println("Filtering sentences from eitities");
 		EntitySetIterator esi = new EntitySetIterator(entities.keySet());
 		sc.filterUsingIterator(esi, nThreads);;
+		System.out.println("Filtering sentences from stop-words");
+		sc.filterUsingIterator(stopWords.iterator(), nThreads);
+
 
 		/*Iterator<CustomEntity> it =  entities.keySet().iterator();
 		while(it.hasNext()){
