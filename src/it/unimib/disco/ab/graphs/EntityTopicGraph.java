@@ -126,9 +126,17 @@ public class EntityTopicGraph implements Serializable{
 		for(int i = 0; i < this.adiacentMatrix.length -1 ; i++)
 			for(int j = i+1; j < this.adiacentMatrix.length; j++){
 				if(this.adiacentMatrix[i][j] < filtValue)
-					this.adiacentMatrix[i][j] = 0;
-					this.adiacentMatrix[j][i] = 0;
+					this.adiacentMatrix[i][j] = 0.0;
+					this.adiacentMatrix[j][i] = 0.0;
 			}
+	}
+	
+	public double[][] getAdiacentMatrix(){
+		return this.adiacentMatrix;
+	}
+	
+	public ArrayList<CustomEntity> getVertexDictionary(){
+		return this.vertexDictionary;
 	}
 
 }
