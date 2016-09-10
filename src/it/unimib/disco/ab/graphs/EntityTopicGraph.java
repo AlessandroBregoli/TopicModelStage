@@ -10,8 +10,13 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
+
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 import it.unimib.disco.ab.ner.CustomEntity;
 
@@ -137,6 +142,64 @@ public class EntityTopicGraph implements Serializable{
 	
 	public ArrayList<CustomEntity> getVertexDictionary(){
 		return this.vertexDictionary;
+	}
+	
+	//implementato per grafi non diretti
+	//dunque considera solo metà matrice
+	public double[] getCentrality() throws Exception{
+		if(this.adiacentMatrix == null)
+			throw new Exception("Matrice di adiacenza non generata");
+		double centrality[] = new double[this.adiacentMatrix[0].length];
+		Arrays.fill(centrality, 0);
+		for(int i = 0; i < this.adiacentMatrix.length - 1; i++){
+			for(int j = i + 1; j < this.adiacentMatrix.length; j++){
+				if(this.adiacentMatrix[i][j] > 0){
+					centrality[i] += this.adiacentMatrix[i][j];
+					centrality[j] += this.adiacentMatrix[i][j];
+				}
+			}
+		}
+		
+		return centrality;
+	}
+	
+	
+	public void serializeForSigma(String path) throws IOException{
+		JSONObject root = new JSONObject();
+		JSONArray nodes = new JSONArray();
+		JSONArray edges = new JSONArray();
+		for(int i = 0; i < this.vertexDictionary.size(); i++){
+			JSONObject node = new JSONObject();
+			node.put("id", Integer.toString(i));
+			node.put("label", this.vertexDictionary.get(i).entityString);
+			node.put("x", Math.cos(Math.PI * 2 * i / this.vertexDictionary.size()));
+			node.put("y", Math.sin(Math.PI * 2 * i / this.vertexDictionary.size()));
+			node.put("size", new Integer(1));
+			nodes.add(node);			
+		}
+		for(int i = 0; i < this.vertexDictionary.size() -1; i++){
+			for(int j = i + 1; j < this.vertexDictionary.size(); j++){
+				if(this.adiacentMatrix[i][j] > 0){
+					JSONObject edge = new JSONObject();
+					edge.put("id", Integer.toString(i) + Integer.toString(j));
+					edge.put("source", Integer.toString(i));
+					edge.put("targhet", Integer.toString(j));
+					edges.add(edge);
+				}
+				
+				
+			}
+		}
+		root.put("nodes", nodes);
+		root.put("edges", edges);
+		
+		StringWriter out = new StringWriter();
+		root.writeJSONString(out);
+		File f = new File(path);
+		FileWriter fw = new FileWriter(f);
+		fw.write(out.toString());
+		fw.close();
+		
 	}
 
 }

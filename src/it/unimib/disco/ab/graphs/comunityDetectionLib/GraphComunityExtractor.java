@@ -17,7 +17,7 @@ public class GraphComunityExtractor {
 		this.comunities = new ArrayList<EntityTopicGraph>();
 	}
 	
-	public void loadGraph(EntityTopicGraph graph){
+	private void loadGraph(EntityTopicGraph graph){
 		this.graph = graph;
         double[] edgeWeight1, edgeWeight2;
         int i, j, nEdges, nLines, nNodes;
@@ -89,7 +89,7 @@ public class GraphComunityExtractor {
         this.network = new Network(nNodes, firstNeighborIndex, neighbor, edgeWeight2);
 	}
 	
-	public void detectComunities(double resolution, long randomSeed, int nRandomStarts, int nIterations){
+	private void detectComunities(double resolution, long randomSeed, int nRandomStarts, int nIterations){
 		double resolution2 = resolution / (2 * this.network.getTotalEdgeWeight() + this.network.totalEdgeWeightSelfLinks);
 		Clustering clustering = null;
 		double maxModularity = Double.NEGATIVE_INFINITY;
@@ -124,7 +124,8 @@ public class GraphComunityExtractor {
 	      }
 		 this.clustering = clustering;
 	}
-	public void generateSubGraphs() throws Exception{
+	
+	private void generateSubGraphs() throws Exception{
 		this.comunities = new ArrayList<EntityTopicGraph>();
 		for(int i = 0; i < this.clustering.cluster.length; i++){
 			if(this.comunities.size() <= this.clustering.cluster[i]){
@@ -150,7 +151,41 @@ public class GraphComunityExtractor {
 		
 	}
 	
+	public void generateComunities(EntityTopicGraph graph, double resolution, long randomSeed, int nRandomStarts, int nIterations ) throws Exception{
+		this.loadGraph(graph);
+		this.detectComunities(resolution, randomSeed, nRandomStarts, nIterations);
+		this.generateSubGraphs();
+	}
+	
 	public ArrayList<EntityTopicGraph> getComunities(){
 		return this.comunities;
 	}
+	
+	//Anche questo grafo è non diretto e dunque viene generata solo metà matrice
+	public EntityTopicGraph getGraphBasedOnCentrality() throws Exception{
+		EntityTopicGraph ret = new EntityTopicGraph(this.graph.getTopic());
+		if(this.comunities == null)
+			throw new Exception("Comunità non generate");
+		for(EntityTopicGraph comunity: this.comunities){
+			int idMaxCentrality = 0;
+			double[] centrality = comunity.getCentrality();
+			for(int i = 1; i < centrality.length; i++){
+				if(centrality[i] > centrality[idMaxCentrality])
+					idMaxCentrality = i;
+			}
+			ret.addVertex(comunity.getVertexDictionary().get(idMaxCentrality));
+		}
+		ret.initializeMatrix();
+		//La matrice di adiacenza viene generata considerando solo i legami tra i nodi eletti e non considerando le relazioni dei nodi rappresentati
+		for(int i = 0; i < ret.getVertexDictionary().size() - 1; i++){
+			int idOriginalMatrixI = this.graph.getVertexDictionary().indexOf(ret.getVertexDictionary().get(i));
+			for(int j = i + 1; j < ret.getVertexDictionary().size(); j++){
+				int idOriginalMatrixJ = this.graph.getVertexDictionary().indexOf(ret.getVertexDictionary().get(j));
+				ret.getAdiacentMatrix()[i][j] = this.graph.getAdiacentMatrix()[idOriginalMatrixI][idOriginalMatrixJ];
+				ret.getAdiacentMatrix()[j][i] = ret.getAdiacentMatrix()[i][j];
+			}
+		}
+		return ret;
+	}
+	
 }

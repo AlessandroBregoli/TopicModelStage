@@ -19,5 +19,6 @@
 	<classpathentry kind="lib" path="/home/alessandro/Schifezze/stanford-ner-2015-12-09/lib/slf4j-api.jar"/>
 	<classpathentry kind="lib" path="/home/alessandro/Schifezze/stanford-ner-2015-12-09/lib/slf4j-simple.jar"/>
 	<classpathentry kind="lib" path="/home/alessandro/Schifezze/stanford-ner-2015-12-09/lib/stanford-ner-resources.jar"/>
+	<classpathentry kind="lib" path="/home/alessandro/MEGAsync/Stage/Librerie java/json-simple-1.1.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

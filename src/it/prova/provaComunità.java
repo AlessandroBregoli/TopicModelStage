@@ -30,9 +30,7 @@ public class provaComunità {
 		et.getAdiacentMatrix()[1][2] = 1.0;
 		et.getAdiacentMatrix()[2][3] = 1.0;
 		GraphComunityExtractor gce = new GraphComunityExtractor();
-		gce.loadGraph(et);
-		gce.detectComunities(1.0, 57, 1, 50);
-		gce.generateSubGraphs();
+		gce.generateComunities(et, 1.0, 57, 1, 50);
 		for(int i = 0; i < gce.clustering.cluster.length; i++){
 			System.out.println(gce.clustering.cluster[i]);
 		}
