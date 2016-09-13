@@ -12,7 +12,7 @@ public class WorkflowGraphFilter {
 		f.nThreads = nThreads;
 		for(int i = 0; i < nThreads; i++)
 			new WorkflowGraphFilterThread(f).start();
-		while(f.nThreads > 0);
+		f.waitUntillEnd();
 	}
 	
 	int i = 0;
@@ -22,7 +22,17 @@ public class WorkflowGraphFilter {
 		if(i < max)
 			return i++;
 		nThreads--;
+		notifyAll();
 		return -1;
+	}
+	public synchronized void waitUntillEnd(){
+		while(this.nThreads > 0)
+			try {
+				wait();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 	}
 
 }

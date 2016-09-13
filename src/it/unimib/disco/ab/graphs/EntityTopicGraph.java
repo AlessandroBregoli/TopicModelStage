@@ -170,7 +170,7 @@ public class EntityTopicGraph implements Serializable{
 		JSONArray edges = new JSONArray();
 		for(int i = 0; i < this.vertexDictionary.size(); i++){
 			JSONObject node = new JSONObject();
-			node.put("id", Integer.toString(i));
+			node.put("id", "n"+Integer.toString(i));
 			node.put("label", this.vertexDictionary.get(i).entityString);
 			node.put("x", Math.cos(Math.PI * 2 * i / this.vertexDictionary.size()));
 			node.put("y", Math.sin(Math.PI * 2 * i / this.vertexDictionary.size()));
@@ -181,9 +181,9 @@ public class EntityTopicGraph implements Serializable{
 			for(int j = i + 1; j < this.vertexDictionary.size(); j++){
 				if(this.adiacentMatrix[i][j] > 0){
 					JSONObject edge = new JSONObject();
-					edge.put("id", Integer.toString(i) + Integer.toString(j));
-					edge.put("source", Integer.toString(i));
-					edge.put("targhet", Integer.toString(j));
+					edge.put("id", "e"+Integer.toString(i) + "-" +  Integer.toString(j));
+					edge.put("source", "n"+Integer.toString(i));
+					edge.put("target", "n"+Integer.toString(j));
 					edges.add(edge);
 				}
 				
