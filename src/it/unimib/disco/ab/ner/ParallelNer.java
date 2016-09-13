@@ -1,6 +1,7 @@
 package it.unimib.disco.ab.ner;
 
 import it.unimib.disco.ab.textPreprocessing.SentenceContainer;
+import it.unimib.disco.ab.textPreprocessing.StringMatcher;
 
 import java.io.IOException;
 import java.util.Iterator;
@@ -17,9 +18,12 @@ public class ParallelNer {
 	SentenceContainer sentences;
 	TreeMap<CustomEntity, LinkedList<Long>> entities;
 	Iterator iter;
+	StringMatcher matcher;
 	private boolean entitiesLights;
 	public ParallelNer(String serializedClassifier[], SentenceContainer sentences) throws ClassCastException, ClassNotFoundException, IOException{
 		this.classifier = new AbstractSequenceClassifier[serializedClassifier.length];
+		String[] regex = {".", "[\\s]*[0-9]*[\\s]*"};
+		this.matcher = new NerStringMatcher(regex);
 		for(int i = 0; i < serializedClassifier.length; i++){
 			this.classifier[i] = CRFClassifier.getClassifier(serializedClassifier[i]);
 		}

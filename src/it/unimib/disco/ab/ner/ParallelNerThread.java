@@ -32,7 +32,7 @@ public class ParallelNerThread extends Thread {
 				Iterator<CustomEntity> it = nerMerge.iterator();
 				while(it.hasNext()){
 					CustomEntity customEntity = it.next();
-		        	if(customEntity.entityClass.equals("0"))
+		        	if(customEntity.entityClass.equals("0") || this.monitor.matcher.match(customEntity.entityString))
 		        		continue;
 		        	
 		        	LinkedList<Long> t = this.monitor.entities.get(customEntity);
