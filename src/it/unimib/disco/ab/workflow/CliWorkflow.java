@@ -109,7 +109,7 @@ public class CliWorkflow {
 		}
 		this.stopWordFile = null;
 		if(this.textAnalysis && cmd.hasOption("stopWord")){
-			this.preNerStopWordFile = cmd.getOptionValue("stopWord");
+			this.stopWordFile = cmd.getOptionValue("stopWord");
 		}	
 		if(this.textAnalysis){
 			if(!cmd.hasOption("serializedNerFile")){

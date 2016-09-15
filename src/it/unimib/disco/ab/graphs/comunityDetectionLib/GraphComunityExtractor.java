@@ -25,8 +25,8 @@ public class GraphComunityExtractor {
     
 
         nLines = 0;
-        for(i = 0; i < graph.getAdiacentMatrix().length - 1; i++){
-        	for(j = i+1; j < graph.getAdiacentMatrix().length; j++){
+        for(i = 0; i < graph.getVertexDictionary().size() - 1; i++){
+        	for(j = i+1; j < graph.getVertexDictionary().size(); j++){
         		if(graph.getAdiacentMatrix()[i][j] > 0.0){
         			nLines++;
         		}
@@ -41,8 +41,8 @@ public class GraphComunityExtractor {
   
         
         int countNLines = 0;
-        for(i = 0; i < graph.getAdiacentMatrix().length - 1; i++){
-        	for(j = i+1; j < graph.getAdiacentMatrix().length; j++){
+        for(i = 0; i < graph.getVertexDictionary().size() - 1; i++){
+        	for(j = i+1; j < graph.getVertexDictionary().size(); j++){
         		if(graph.getAdiacentMatrix()[i][j] > 0.0){
         			node1[countNLines] = i;
         			node2[countNLines] = j;
@@ -152,6 +152,8 @@ public class GraphComunityExtractor {
 	}
 	
 	public void generateComunities(EntityTopicGraph graph, double resolution, long randomSeed, int nRandomStarts, int nIterations ) throws Exception{
+		if(graph.getVertexDictionary().size() == 0)
+			return;	
 		this.loadGraph(graph);
 		this.detectComunities(resolution, randomSeed, nRandomStarts, nIterations);
 		this.generateSubGraphs();

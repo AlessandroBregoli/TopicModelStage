@@ -46,6 +46,8 @@ public class WorkflowGraphFilterThread extends Thread {
 			}
 			if(this.monitor.generateComunities){
 				GraphComunityExtractor gce = new GraphComunityExtractor();
+				if(g.getVertexDictionary().size() == 0)
+					continue;
 				try {
 					gce.generateComunities(g, 1.0, 57, 1, 50);
 				

@@ -196,13 +196,18 @@ public class EntityTopicGraph implements Serializable{
 		}
 		root.put("nodes", nodes);
 		root.put("edges", edges);
-		
+		/*
 		StringWriter out = new StringWriter();
 		root.writeJSONString(out);
 		File f = new File(path);
 		FileWriter fw = new FileWriter(f);
 		fw.write(out.toString());
+		fw.close();*/
+		File f = new File(path);
+		FileWriter fw = new FileWriter(f);
+		fw.write(root.toJSONString());
 		fw.close();
+		
 		
 	}
 	public EntityTopicGraph getFilteredGraph(CustomEntityMatcher cem){
@@ -215,6 +220,7 @@ public class EntityTopicGraph implements Serializable{
 					ret.addVertex(ce);
 				} catch (Exception e) {}
 		}
+		ret.initializeMatrix();
 		for(int i = 0; i < ret.getVertexDictionary().size() - 1; i++){
 			int idOriginalMatrixI = this.vertexDictionary.indexOf(ret.getVertexDictionary().get(i));
 			for(int j = i + 1; j < ret.getVertexDictionary().size(); j++){
