@@ -19,14 +19,14 @@ import it.unimib.disco.ab.textPreprocessing.SentenceContainer;
 import it.unimib.disco.ab.textPreprocessing.SentenceSplitter;
 import it.unimib.disco.ab.xmlParser.DirectoryScanner;
 
-public class Workflow {
+public class WorkflowTextAnalysis {
 	public static void main(String[] args) throws Exception{
 		String[] serialNer = {
 				"/home/alessandro/Schifezze/stanford-ner-2015-12-09/classifiers/english.all.3class.distsim.crf.ser.gz",
 				"/home/alessandro/Schifezze/stanford-ner-2015-12-09/classifiers/english.conll.4class.distsim.crf.ser.gz",
 				"/home/alessandro/Schifezze/stanford-ner-2015-12-09/classifiers/english.muc.7class.distsim.crf.ser.gz"
 		};
-		Workflow.startWorkflow(3, 30, "/home/alessandro/MEGAsync/Stage/Dataset/miniset", "/home/alessandro/MEGAsync/Stage/Stoplist/en-preNer.txt", "/home/alessandro/MEGAsync/Stage/Stoplist/en.txt", serialNer);
+		WorkflowTextAnalysis.startWorkflow(3, 30, "/home/alessandro/MEGAsync/Stage/Dataset/miniset", "/home/alessandro/MEGAsync/Stage/Stoplist/en-preNer.txt", "/home/alessandro/MEGAsync/Stage/Stoplist/en.txt", serialNer);
 	}
 	public static void startWorkflow(int nThreads, int nTopic, String datasetFolder, String prenerStopWordFile, String stopWordFile, String[] serialNer) throws Exception{
 		
@@ -36,23 +36,24 @@ public class Workflow {
 		System.out.println("Splitting sentences");
 		SentenceContainer sc = new SentenceSplitter(ds.getArticles());
 		SentenceContainer scCopy = (SentenceContainer) sc.clone();
-		System.out.println("Loading pre-ner stopwords");
-		File sw = new File(prenerStopWordFile);
-		LinkedList<String> stopWords= new LinkedList<String>();
-		try{
-		FileReader fr = new FileReader(sw);
-		BufferedReader br = new BufferedReader(fr);
-		
-		String stopword;
-		while((stopword = br.readLine())!=null){
-			stopWords.add(stopword);
+		if(prenerStopWordFile != null){
+			System.out.println("Loading pre-ner stopwords");
+			File sw = new File(prenerStopWordFile);
+			LinkedList<String> stopWords= new LinkedList<String>();
+			try{
+			FileReader fr = new FileReader(sw);
+			BufferedReader br = new BufferedReader(fr);
+			
+			String stopword;
+			while((stopword = br.readLine())!=null){
+				stopWords.add(stopword);
+			}
+			br.close();
+			fr.close();
+			}catch(Exception e){}
+			System.out.println("Filtering sentences from pre-ner stopwords");
+			sc.filterUsingIterator(stopWords.iterator(), nThreads);
 		}
-		br.close();
-		fr.close();
-		}catch(Exception e){}
-		System.out.println("Filtering sentences from pre-ner stopwords");
-		sc.filterUsingIterator(stopWords.iterator(), nThreads);
-		
 		System.out.println("Using ner");
 		TreeMap<CustomEntity, LinkedList<Long>> entities = null;
 		try {
@@ -61,27 +62,30 @@ public class Workflow {
 		} catch (ClassCastException | ClassNotFoundException | IOException e) {
 			e.printStackTrace();
 		}
-		System.out.println("Loading stop-words");
-		sw = new File(stopWordFile);
-
-		stopWords= new LinkedList<String>();
-		try{
-		FileReader fr = new FileReader(sw);
-		BufferedReader br = new BufferedReader(fr);
-		
-		String stopword;
-		while((stopword = br.readLine())!=null){
-			stopWords.add(stopword);
-		}
-		br.close();
-		fr.close();
-		}catch(Exception e){}
 		System.out.println("Filtering sentences from eitities");
 		EntitySetIterator esi = new EntitySetIterator(entities.keySet());
 		sc.filterUsingIterator(esi, nThreads);;
+		if(stopWordFile != null){
+			System.out.println("Loading stop-words");
+			File sw = new File(stopWordFile);
+	
+			LinkedList<String> stopWords= new LinkedList<String>();
+			try{
+			FileReader fr = new FileReader(sw);
+			BufferedReader br = new BufferedReader(fr);
+			
+			String stopword;
+			while((stopword = br.readLine())!=null){
+				stopWords.add(stopword);
+			}
+			br.close();
+			fr.close();
+			}catch(Exception e){}
+		
+		
 		System.out.println("Filtering sentences from stop-words");
 		sc.filterUsingIterator(stopWords.iterator(), nThreads);
-
+		}
 
 		/*Iterator<CustomEntity> it =  entities.keySet().iterator();
 		while(it.hasNext()){

@@ -13,16 +13,20 @@ import java.io.Serializable;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.LinkedList;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import it.unimib.disco.ab.ner.CustomEntity;
+import it.unimib.disco.ab.ner.CustomEntityMatcher;
 
 //TODO definire una superclasse Graph se si intende usare grafi in più di un'occasione
 //Questa classe gestisce prevalentemente grafi non diretti quindi di fatto solo metà della matrice di adiacenza viene considerata
 public class EntityTopicGraph implements Serializable{
+	
+	public static final long serialVersionUID = 1L;
 	double adiacentMatrix[][];
 	ArrayList<CustomEntity> vertexDictionary;
 	int topic;
@@ -200,6 +204,26 @@ public class EntityTopicGraph implements Serializable{
 		fw.write(out.toString());
 		fw.close();
 		
+	}
+	public EntityTopicGraph getFilteredGraph(CustomEntityMatcher cem){
+		EntityTopicGraph ret = new EntityTopicGraph(this.topic);
+		Iterator<CustomEntity> it = this.vertexDictionary.iterator();
+		while(it.hasNext()){
+			CustomEntity ce = it.next();
+			if(cem.match(ce))
+				try {
+					ret.addVertex(ce);
+				} catch (Exception e) {}
+		}
+		for(int i = 0; i < ret.getVertexDictionary().size() - 1; i++){
+			int idOriginalMatrixI = this.vertexDictionary.indexOf(ret.getVertexDictionary().get(i));
+			for(int j = i + 1; j < ret.getVertexDictionary().size(); j++){
+				int idOriginalMatrixJ = this.vertexDictionary.indexOf(ret.getVertexDictionary().get(j));
+				ret.getAdiacentMatrix()[i][j] = this.adiacentMatrix[idOriginalMatrixI][idOriginalMatrixJ];
+				ret.getAdiacentMatrix()[j][i] = ret.getAdiacentMatrix()[i][j];
+			}
+		}
+		return ret;
 	}
 
 }

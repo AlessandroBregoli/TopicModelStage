@@ -33,7 +33,7 @@ public class WorkflowForServer {
 		for(int i = 0; i  < serialNer.length; i++){
 			serialNer[i] = args[5 + i]; 
 		}
-		Workflow.startWorkflow(nThreads, nTopic, datasetFolder, prenerStopWordFile, stopWordFile, serialNer);
+		WorkflowTextAnalysis.startWorkflow(nThreads, nTopic, datasetFolder, prenerStopWordFile, stopWordFile, serialNer);
 		
 	}
 }
