@@ -25,11 +25,11 @@ public class CliWorkflow {
 	private boolean graphFilter;
 	private double pctFilterValue;
 	private String[] classFilters;
-	private boolean useEdgeFilteredData;
 	private boolean generateComunities;
 	private boolean generateNetFile;
 	private boolean generateJSONFile;
 	private boolean parameterOK;
+	private boolean serializeTopicsWordForJSON;
 	public CliWorkflow(String[] args){
 		this.args = args;
 	}
@@ -41,8 +41,9 @@ public class CliWorkflow {
 		ops.addOption("numTopics", true, "Number of topcs");
 		ops.addOption("textAnalysis", false,"Enable Text analysis" );
 			ops.addOption("dataset", true, "The dataset folder");
-			ops.addOption("pStopWord", true, "the text file witch contains the prener stopwords");
+			ops.addOption("pStopWord", true, "The text file witch contains the prener stopwords");
 			ops.addOption("stopWord", true, "The text file witch contains the stopwords");
+			ops.addOption("serializeTopicsWordForJSON", false, "Serialize the topics word in JSON format");
 			/*
 			Option snf = new Option("serializedNerFile", "Serialized ner file");
 			snf.setArgs(Option.UNLIMITED_VALUES);
@@ -57,7 +58,6 @@ public class CliWorkflow {
 			cf.setValueSeparator(',');*/
 			ops.addOption("classFilter", true,  "Enable white list of ner class separated by coma");
 			ops.addOption("generateC", false, "Generate graphs based on comunities");
-			ops.addOption("useEdgeFilteredData", false, "select the edge filtered dat file instead of normal ones");
 			ops.addOption("generateNetFile", false, "Generate graph in pajec format");
 			ops.addOption("generateJSONFile", false, "Generate graph in JSON Sigma format");
 		ops.addOption("help", false, "Generate this output");
@@ -118,6 +118,8 @@ public class CliWorkflow {
 			}
 			this.serializedNerFiles = cmd.getOptionValue("serializedNerFile").split(",");
 		}
+		this.serializeTopicsWordForJSON = cmd.hasOption("serializeTopicsWordForJSON");
+		
 		//Graph filtering
 		this.graphFilter = cmd.hasOption("graphFilter");
 		this.pctFilterValue = 0.0;
@@ -129,7 +131,6 @@ public class CliWorkflow {
 			this.classFilters = cmd.getOptionValues("classFilter");
 		}
 		this.generateComunities = cmd.hasOption("generateC");
-		this.useEdgeFilteredData = cmd.hasOption("useEdgeFilteredData");
 		this.generateNetFile = cmd.hasOption("generateNetFile");
 		this.generateJSONFile = cmd.hasOption("generateJSONFile");
 		this.parameterOK = true;
@@ -141,10 +142,10 @@ public class CliWorkflow {
 			throw new Exception("Parametri non correttamente inizializzati");
 		}
 		if(this.textAnalysis){
-			WorkflowTextAnalysis.startWorkflow(this.numberOfThreads, this.numberOfTopics, this.datasetFolder, this.preNerStopWordFile, this.stopWordFile, this.serializedNerFiles);
+			WorkflowTextAnalysis.startWorkflow(this.numberOfThreads, this.numberOfTopics, this.datasetFolder, this.preNerStopWordFile, this.stopWordFile, this.serializedNerFiles, this.serializeTopicsWordForJSON);
 		}
 		if(this.graphFilter){
-			WorkflowGraphFilter.startWorkflow(this.numberOfThreads, this.numberOfTopics, this.pctFilterValue, this.classFilters,this.generateComunities, this.useEdgeFilteredData, generateNetFile, this.generateJSONFile);
+			WorkflowGraphFilter.startWorkflow(this.numberOfThreads, this.numberOfTopics, this.pctFilterValue, this.classFilters,this.generateComunities, generateNetFile, this.generateJSONFile);
 		}
 		
 	}

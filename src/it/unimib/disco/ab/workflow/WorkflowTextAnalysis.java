@@ -26,9 +26,9 @@ public class WorkflowTextAnalysis {
 				"/home/alessandro/Schifezze/stanford-ner-2015-12-09/classifiers/english.conll.4class.distsim.crf.ser.gz",
 				"/home/alessandro/Schifezze/stanford-ner-2015-12-09/classifiers/english.muc.7class.distsim.crf.ser.gz"
 		};
-		WorkflowTextAnalysis.startWorkflow(3, 30, "/home/alessandro/MEGAsync/Stage/Dataset/miniset", "/home/alessandro/MEGAsync/Stage/Stoplist/en-preNer.txt", "/home/alessandro/MEGAsync/Stage/Stoplist/en.txt", serialNer);
+		WorkflowTextAnalysis.startWorkflow(3, 30, "/home/alessandro/MEGAsync/Stage/Dataset/miniset", "/home/alessandro/MEGAsync/Stage/Stoplist/en-preNer.txt", "/home/alessandro/MEGAsync/Stage/Stoplist/en.txt", serialNer, true);
 	}
-	public static void startWorkflow(int nThreads, int nTopic, String datasetFolder, String prenerStopWordFile, String stopWordFile, String[] serialNer) throws Exception{
+	public static void startWorkflow(int nThreads, int nTopic, String datasetFolder, String prenerStopWordFile, String stopWordFile, String[] serialNer, boolean serializeTopicsWordForJSON) throws Exception{
 		
 		System.out.println("Loading xml");
 		DirectoryScanner ds = new DirectoryScanner(new File(datasetFolder));
@@ -95,6 +95,9 @@ public class WorkflowTextAnalysis {
 		System.out.println("Using LDA");
 		CustomTopicModel ctm = new CustomTopicModel(sc);
 		ctm.modella(nTopic, nThreads);
+		if(serializeTopicsWordForJSON){
+			ctm.serializeTopicsWordForJSON("topics.json");
+		}
 		System.out.println("Using inferencer");
 		ParallelInferencer pi = new ParallelInferencer(ctm.getInferencer(), sc,0);
 		SentenceTopicRelation str = pi.getSenteceTopicRelation(nThreads);

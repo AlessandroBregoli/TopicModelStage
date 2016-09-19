@@ -18,22 +18,17 @@ public class WorkflowGraphFilterThread extends Thread {
 			int i = this.monitor.getGraphIndex();
 			if(i < 0)
 				return;
-			
-			EntityTopicGraph g;
-			System.out.println(i);
-			if(this.monitor.pctFilter > 0.0){
-				g = new EntityTopicGraph("Topic" + i + ".dat");
-				g.pctFilter(this.monitor.pctFilter);
-				g.serializeForJava("Topic" + i + "Filtered.dat");
-			}else if(this.monitor.useEdgeFilteredData){
-				g  = new EntityTopicGraph("Topic" + i + "Filtered.dat");
-			}else{
-				g  = new EntityTopicGraph("Topic" + i + ".dat");
-			}
+			EntityTopicGraph g = new EntityTopicGraph("Topic" + i + ".dat");
 			if(this.monitor.classFilter != null){
 				g = g.getFilteredGraph(new CustomEntityMatcherByClass(this.monitor.classFilter));
 			}
 				
+			System.out.println(i);
+			if(this.monitor.pctFilter > 0.0){
+				g.pctFilter(this.monitor.pctFilter);
+			}
+			
+		
 			if(this.monitor.generateNetFile){
 				g.serializeForPajec("Topic" + i + ".net");
 			}

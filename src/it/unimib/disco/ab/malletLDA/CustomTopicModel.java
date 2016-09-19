@@ -3,10 +3,19 @@ package it.unimib.disco.ab.malletLDA;
 import it.unimib.disco.ab.textPreprocessing.SentenceContainer;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.TreeSet;
+
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 import cc.mallet.topics.ParallelTopicModel;
 import cc.mallet.topics.TopicInferencer;
+import cc.mallet.types.Alphabet;
+import cc.mallet.types.IDSorter;
 import cc.mallet.types.InstanceList;
 
 
@@ -14,6 +23,7 @@ public class CustomTopicModel {
 	private SentenceContainer dataSet;
 	public ParallelTopicModel model;
 	private int nTopics;
+	private InstanceList instances;
 	public CustomTopicModel(SentenceContainer dataSet){
 		this.dataSet = dataSet;
 	}
@@ -32,8 +42,27 @@ public class CustomTopicModel {
 		try {
 			this.model.estimate();
 		} catch (IOException e) {}
+		this.instances = instances;
 	}
 	
+	public void serializeTopicsWordForJSON(String path) throws IOException{
+		JSONObject root = new JSONObject();
+		ArrayList<TreeSet<IDSorter>> topicSortedWords = model.getSortedWords();
+		Alphabet dataAlphabet = this.instances.getDataAlphabet();
+		for(int i = 0; i < this.model.numTopics; i++){
+			JSONArray topic = new JSONArray();
+			Iterator<IDSorter> iterator = topicSortedWords.get(i).iterator();
+			while(iterator.hasNext()){
+				 IDSorter idCountPair = iterator.next();
+				 topic.add(dataAlphabet.lookupObject(idCountPair.getID()));
+			}
+			root.put(i, topic);
+		}
+		File f = new File(path);
+		FileWriter fw = new FileWriter(f);
+		fw.write(root.toJSONString());
+		fw.close();
+	}
 	public TopicInferencer getInferencer(){
 		return this.model.getInferencer();
 	}
