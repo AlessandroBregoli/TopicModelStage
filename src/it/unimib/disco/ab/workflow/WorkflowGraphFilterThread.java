@@ -20,7 +20,7 @@ public class WorkflowGraphFilterThread extends Thread {
 				return;
 			EntityTopicGraph g = new EntityTopicGraph("Topic" + i + ".dat");
 			if(this.monitor.classFilter != null){
-				g = g.getFilteredGraph(new CustomEntityMatcherByClass(this.monitor.classFilter));
+				g = g.getFilteredGraph(new CustomEntityMatcherByClass(this.monitor.classFilter), this.monitor.interclassEdgeOnly);
 			}
 				
 			System.out.println(i);

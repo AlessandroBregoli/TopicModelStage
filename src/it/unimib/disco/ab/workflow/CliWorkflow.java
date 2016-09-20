@@ -30,6 +30,7 @@ public class CliWorkflow {
 	private boolean generateJSONFile;
 	private boolean parameterOK;
 	private boolean serializeTopicsWordForJSON;
+	private boolean interclassEdgeOnly;
 	public CliWorkflow(String[] args){
 		this.args = args;
 	}
@@ -60,6 +61,7 @@ public class CliWorkflow {
 			ops.addOption("generateC", false, "Generate graphs based on comunities");
 			ops.addOption("generateNetFile", false, "Generate graph in pajec format");
 			ops.addOption("generateJSONFile", false, "Generate graph in JSON Sigma format");
+			ops.addOption("interclassEdgeOnly", false, "Filter all intraclass edge(only when class filter is used)");
 		ops.addOption("help", false, "Generate this output");
 		
 		
@@ -128,11 +130,12 @@ public class CliWorkflow {
 		}
 		this.classFilters = null;
 		if(this.graphFilter && cmd.hasOption("classFilter")){
-			this.classFilters = cmd.getOptionValues("classFilter");
+			this.classFilters = cmd.getOptionValue("classFilter").split(",");
 		}
 		this.generateComunities = cmd.hasOption("generateC");
 		this.generateNetFile = cmd.hasOption("generateNetFile");
 		this.generateJSONFile = cmd.hasOption("generateJSONFile");
+		this.interclassEdgeOnly = cmd.hasOption("interclassEdgeOnly");
 		this.parameterOK = true;
 		return true;
 	}
@@ -145,7 +148,7 @@ public class CliWorkflow {
 			WorkflowTextAnalysis.startWorkflow(this.numberOfThreads, this.numberOfTopics, this.datasetFolder, this.preNerStopWordFile, this.stopWordFile, this.serializedNerFiles, this.serializeTopicsWordForJSON);
 		}
 		if(this.graphFilter){
-			WorkflowGraphFilter.startWorkflow(this.numberOfThreads, this.numberOfTopics, this.pctFilterValue, this.classFilters,this.generateComunities, generateNetFile, this.generateJSONFile);
+			WorkflowGraphFilter.startWorkflow(this.numberOfThreads, this.numberOfTopics, this.pctFilterValue, this.classFilters,this.generateComunities, generateNetFile, this.generateJSONFile, this.interclassEdgeOnly);
 		}
 		
 	}

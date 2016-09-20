@@ -210,7 +210,7 @@ public class EntityTopicGraph implements Serializable{
 		
 		
 	}
-	public EntityTopicGraph getFilteredGraph(CustomEntityMatcher cem){
+	public EntityTopicGraph getFilteredGraph(CustomEntityMatcher cem, boolean interclassOnly){
 		EntityTopicGraph ret = new EntityTopicGraph(this.topic);
 		Iterator<CustomEntity> it = this.vertexDictionary.iterator();
 		while(it.hasNext()){
@@ -224,6 +224,10 @@ public class EntityTopicGraph implements Serializable{
 		for(int i = 0; i < ret.getVertexDictionary().size() - 1; i++){
 			int idOriginalMatrixI = this.vertexDictionary.indexOf(ret.getVertexDictionary().get(i));
 			for(int j = i + 1; j < ret.getVertexDictionary().size(); j++){
+				if(interclassOnly){
+					if(ret.getVertexDictionary().get(i).entityClass == ret.getVertexDictionary().get(j).entityClass)
+						continue;
+				}
 				int idOriginalMatrixJ = this.vertexDictionary.indexOf(ret.getVertexDictionary().get(j));
 				ret.getAdiacentMatrix()[i][j] = this.adiacentMatrix[idOriginalMatrixI][idOriginalMatrixJ];
 				ret.getAdiacentMatrix()[j][i] = ret.getAdiacentMatrix()[i][j];
