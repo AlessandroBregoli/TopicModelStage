@@ -210,6 +210,30 @@ public class EntityTopicGraph implements Serializable{
 		
 		
 	}
+	
+	public EntityTopicGraph getCentralityFilteredGraph(double pct) throws Exception{
+		EntityTopicGraph ret = new EntityTopicGraph(this.topic);
+		double[] centrality = this.getCentrality();
+		double[] centrality2 = centrality.clone();
+		Arrays.sort(centrality2);
+		double filt = centrality2[(int) (pct * centrality.length)];
+		for(int i = 0; i < centrality.length; i++){
+			if(centrality[i] >= filt){
+				ret.addVertex(this.vertexDictionary.get(i));
+			}
+		}
+		ret.initializeMatrix();
+		for(int i = 0; i < ret.getVertexDictionary().size() - 1; i++){
+			int idOriginalMatrixI = this.vertexDictionary.indexOf(ret.getVertexDictionary().get(i));
+			for(int j = i + 1; j < ret.getVertexDictionary().size(); j++){
+				int idOriginalMatrixJ = this.vertexDictionary.indexOf(ret.getVertexDictionary().get(j));
+				ret.getAdiacentMatrix()[i][j] = this.adiacentMatrix[idOriginalMatrixI][idOriginalMatrixJ];
+				ret.getAdiacentMatrix()[j][i] = ret.getAdiacentMatrix()[i][j];
+			}
+		}
+		
+		return ret;
+	}
 	public EntityTopicGraph getFilteredGraph(CustomEntityMatcher cem, boolean interclassOnly){
 		EntityTopicGraph ret = new EntityTopicGraph(this.topic);
 		Iterator<CustomEntity> it = this.vertexDictionary.iterator();
