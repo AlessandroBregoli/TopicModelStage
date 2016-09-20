@@ -44,7 +44,7 @@ public class CustomTopicModel {
 		} catch (IOException e) {}
 		this.instances = instances;
 	}
-	
+	//TODO In rank dovrebbe essere un parametro e non hard coded
 	public void serializeTopicsWordForJSON(String path) throws IOException{
 		JSONObject root = new JSONObject();
 		ArrayList<TreeSet<IDSorter>> topicSortedWords = model.getSortedWords();
@@ -52,9 +52,11 @@ public class CustomTopicModel {
 		for(int i = 0; i < this.model.numTopics; i++){
 			JSONArray topic = new JSONArray();
 			Iterator<IDSorter> iterator = topicSortedWords.get(i).iterator();
-			while(iterator.hasNext()){
+			int rank = 0;
+			while(iterator.hasNext() && rank < 10){
 				 IDSorter idCountPair = iterator.next();
 				 topic.add(dataAlphabet.lookupObject(idCountPair.getID()));
+				 rank++;
 			}
 			root.put(i, topic);
 		}
