@@ -27,7 +27,14 @@ public class WorkflowGraphFilterThread extends Thread {
 			if(this.monitor.pctFilter > 0.0){
 				g.pctFilter(this.monitor.pctFilter);
 			}
-			
+			if(this.monitor.pctFilterCentrality > 0.0){
+				try {
+					g = g.getCentralityFilteredGraph(this.monitor.pctFilterCentrality);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 		
 			if(this.monitor.generateNetFile){
 				g.serializeForPajec("Topic" + i + ".net");

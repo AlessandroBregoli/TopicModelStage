@@ -14,14 +14,14 @@ public class WorkflowGraphFilter {
 			new WorkflowGraphFilterThread(f).start();
 		f.waitUntillEnd();
 	}*/
-	public static void startWorkflow(int nThreads, int nTopics, double pctFilter, String[] classFilter, boolean generateComunities, boolean generateNetFile, boolean generateJSONFile, boolean interclassEdgeOnly ){
-		WorkflowGraphFilter f = new WorkflowGraphFilter(nThreads, nTopics, pctFilter, classFilter, generateComunities, generateNetFile, generateJSONFile, interclassEdgeOnly);
+	public static void startWorkflow(int nThreads, int nTopics, double pctFilter, String[] classFilter, boolean generateComunities, boolean generateNetFile, boolean generateJSONFile, boolean interclassEdgeOnly, double pctFilterCentrality ){
+		WorkflowGraphFilter f = new WorkflowGraphFilter(nThreads, nTopics, pctFilter, classFilter, generateComunities, generateNetFile, generateJSONFile, interclassEdgeOnly, pctFilterCentrality);
 		for(int i = 0; i < nThreads; i++)
 			new WorkflowGraphFilterThread(f).start();
 		f.waitUntillEnd();
 	}
 	
-	public WorkflowGraphFilter(int nThreads, int nTopics,double pctFilter, String[] classFilter, boolean generateComunities, boolean generateNetFile, boolean generateJSONFile, boolean interclassEdgeOnly){
+	public WorkflowGraphFilter(int nThreads, int nTopics,double pctFilter, String[] classFilter, boolean generateComunities, boolean generateNetFile, boolean generateJSONFile, boolean interclassEdgeOnly, double pctFilterCentrality){
 		this.nThreads = nThreads;
 		this.nTopics = nTopics;
 		this.pctFilter = pctFilter;
@@ -30,12 +30,14 @@ public class WorkflowGraphFilter {
 		this.generateNetFile = generateNetFile;
 		this.generateJSONFile = generateJSONFile;
 		this.interclassEdgeOnly = interclassEdgeOnly;
+		this.pctFilterCentrality = pctFilterCentrality;
 		
 	}
 	int currentTopic = 0;
 	int nTopics = 0;
 	int nThreads = 0;
 	double pctFilter;
+	double pctFilterCentrality;
 	String[] classFilter;
 	boolean generateComunities;
 	boolean generateNetFile;

@@ -24,6 +24,7 @@ public class CliWorkflow {
 	private String serializedNerFiles[];
 	private boolean graphFilter;
 	private double pctFilterValue;
+	private double pctFilterCentralityValue;
 	private String[] classFilters;
 	private boolean generateComunities;
 	private boolean generateNetFile;
@@ -53,6 +54,7 @@ public class CliWorkflow {
 			ops.addOption("serializedNerFile", true, "Serialized ner file separated by coma");
 		ops.addOption("graphFilter", false, "Enable Graph Filtering");
 			ops.addOption("pctFilter", true, "[0..1] number of arc(percentual) less weighted to be deleted");
+			ops.addOption("pctFilterCentrality", true, "[0..1] number of node(percentual) less central to be deleted");
 			/*
 			Option cf = new Option("classFilter", "Enable white list of ner class");
 			cf.setArgs(Option.UNLIMITED_VALUES);
@@ -128,6 +130,10 @@ public class CliWorkflow {
 		if(this.graphFilter && cmd.hasOption("pctFilter")){
 			this.pctFilterValue = Double.parseDouble(cmd.getOptionValue("pctFilter"));
 		}
+		this.pctFilterCentralityValue = 0.0;
+		if(this.graphFilter && cmd.hasOption("pctFilter")){
+			this.pctFilterCentralityValue = Double.parseDouble(cmd.getOptionValue("pctFilterCentrality"));
+		}
 		this.classFilters = null;
 		if(this.graphFilter && cmd.hasOption("classFilter")){
 			this.classFilters = cmd.getOptionValue("classFilter").split(",");
@@ -148,7 +154,7 @@ public class CliWorkflow {
 			WorkflowTextAnalysis.startWorkflow(this.numberOfThreads, this.numberOfTopics, this.datasetFolder, this.preNerStopWordFile, this.stopWordFile, this.serializedNerFiles, this.serializeTopicsWordForJSON);
 		}
 		if(this.graphFilter){
-			WorkflowGraphFilter.startWorkflow(this.numberOfThreads, this.numberOfTopics, this.pctFilterValue, this.classFilters,this.generateComunities, generateNetFile, this.generateJSONFile, this.interclassEdgeOnly);
+			WorkflowGraphFilter.startWorkflow(this.numberOfThreads, this.numberOfTopics, this.pctFilterValue, this.classFilters,this.generateComunities, generateNetFile, this.generateJSONFile, this.interclassEdgeOnly, this.pctFilterCentralityValue);
 		}
 		
 	}
