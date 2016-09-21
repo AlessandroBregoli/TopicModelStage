@@ -59,7 +59,7 @@ public class CliWorkflow {
 			snf.setValueSeparator(',');*/
 			
 			ops.addOption("serializedNerFile", true, "Serialized ner file separated by coma");
-			ops.addOption("enablePerplexityAnalisis", false, "Enable the preplexity analisis for automatically select the best nuber of topics");
+			ops.addOption("enablePerplexityAnalysis", false, "Enable the preplexity analysis for automatically select the best nuber of topics");
 		ops.addOption("graphFilter", false, "Enable Graph Filtering");
 			ops.addOption("pctFilter", true, "[0..1] number of arc(percentual) less weighted to be deleted");
 			ops.addOption("pctFilterCentrality", true, "[0..1] number of node(percentual) less central to be deleted");
@@ -89,7 +89,7 @@ public class CliWorkflow {
 			formatter.printHelp( "TopicModelStage", options );
 			return false;
 		}
-		this.perplexityAnalysis = cmd.hasOption("enablePerplexityAnalisis");
+		this.perplexityAnalysis = cmd.hasOption("enablePerplexityAnalysis");
 		if(!cmd.hasOption("numTopics")){
 			System.err.println("Number of topics required");
 			return false;

@@ -54,7 +54,7 @@ public class CustomTopicModel {
 			for(int j = 0; j < this.model.tokensPerTopic.length; j++){
 				tmp += this.model.tokensPerTopic[j];
 			}
-			double perplexity = Math.exp(this.model.modelLogLikelihood()/tmp);
+			double perplexity = Math.exp(-this.model.modelLogLikelihood()/tmp);
 			if( perplexity > maxPerplexity){
 				maxPerplexity = perplexity;
 				max = i;
