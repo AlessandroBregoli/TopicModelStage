@@ -131,7 +131,7 @@ public class CliWorkflow {
 			this.pctFilterValue = Double.parseDouble(cmd.getOptionValue("pctFilter"));
 		}
 		this.pctFilterCentralityValue = 0.0;
-		if(this.graphFilter && cmd.hasOption("pctFilter")){
+		if(this.graphFilter && cmd.hasOption("pctFilterCentrality")){
 			this.pctFilterCentralityValue = Double.parseDouble(cmd.getOptionValue("pctFilterCentrality"));
 		}
 		this.classFilters = null;

@@ -128,7 +128,9 @@ public class EntityTopicGraph implements Serializable{
 		ArrayList<Double> lista = new ArrayList<Double>();
 		for(int i = 0; i < this.adiacentMatrix.length - 1; i++){
 			for(int j = i+1; j < this.adiacentMatrix.length; j++){
-				EntityTopicGraph.addElement(this.adiacentMatrix[i][j],lista);
+				if(this.adiacentMatrix[i][j] > 0.0){
+					EntityTopicGraph.addElement(this.adiacentMatrix[i][j],lista);
+				}
 			}
 		}
 		double filtValue = lista.get((int)((lista.size()-1) * pct));
@@ -183,7 +185,9 @@ public class EntityTopicGraph implements Serializable{
 		}
 		for(int i = 0; i < this.vertexDictionary.size() -1; i++){
 			for(int j = i + 1; j < this.vertexDictionary.size(); j++){
-				if(this.adiacentMatrix[i][j] > 0){
+				
+				if(this.adiacentMatrix[i][j] > 0.0){
+					
 					JSONObject edge = new JSONObject();
 					edge.put("id", "e"+Integer.toString(i) + "-" +  Integer.toString(j));
 					edge.put("source", "n"+Integer.toString(i));
@@ -212,6 +216,7 @@ public class EntityTopicGraph implements Serializable{
 	}
 	
 	public EntityTopicGraph getCentralityFilteredGraph(double pct) throws Exception{
+		
 		EntityTopicGraph ret = new EntityTopicGraph(this.topic);
 		double[] centrality = this.getCentrality();
 		double[] centrality2 = centrality.clone();
@@ -248,13 +253,17 @@ public class EntityTopicGraph implements Serializable{
 		for(int i = 0; i < ret.getVertexDictionary().size() - 1; i++){
 			int idOriginalMatrixI = this.vertexDictionary.indexOf(ret.getVertexDictionary().get(i));
 			for(int j = i + 1; j < ret.getVertexDictionary().size(); j++){
-				if(interclassOnly){
-					if(ret.getVertexDictionary().get(i).entityClass == ret.getVertexDictionary().get(j).entityClass)
-						continue;
+			
+				if(!(interclassOnly && ret.getVertexDictionary().get(i).entityClass.equals(ret.getVertexDictionary().get(j).entityClass))){
+					int idOriginalMatrixJ = this.vertexDictionary.indexOf(ret.getVertexDictionary().get(j));
+					ret.getAdiacentMatrix()[i][j] = this.adiacentMatrix[idOriginalMatrixI][idOriginalMatrixJ];
+					ret.getAdiacentMatrix()[j][i] = ret.getAdiacentMatrix()[i][j];
+					
 				}
-				int idOriginalMatrixJ = this.vertexDictionary.indexOf(ret.getVertexDictionary().get(j));
-				ret.getAdiacentMatrix()[i][j] = this.adiacentMatrix[idOriginalMatrixI][idOriginalMatrixJ];
-				ret.getAdiacentMatrix()[j][i] = ret.getAdiacentMatrix()[i][j];
+				else{
+					ret.getAdiacentMatrix()[i][j] = 0.0;
+					ret.getAdiacentMatrix()[j][i] = 0.0;
+				}
 			}
 		}
 		return ret;
