@@ -10,9 +10,13 @@ import org.apache.commons.cli.ParseException;
 
 public class CliWorkflow {
 	public static void main(String[] args) throws Exception{
+		
 		CliWorkflow c = new CliWorkflow(args);
 		c.parseArgs();
+
 		c.exec();
+
+		System.out.println("CIAONE");
 	}
 	String[] args;
 	private int numberOfTopics;
@@ -32,6 +36,9 @@ public class CliWorkflow {
 	private boolean parameterOK;
 	private boolean serializeTopicsWordForJSON;
 	private boolean interclassEdgeOnly;
+	private boolean perplexityAnalysis;
+	private int minNumberOfTopics;
+	private int maxNumberOfTopics;
 	public CliWorkflow(String[] args){
 		this.args = args;
 	}
@@ -40,7 +47,7 @@ public class CliWorkflow {
 	private Options createOptions(){
 		Options ops = new Options();
 		ops.addOption("numThread", true, "Number of thread used(main thread excluded)");
-		ops.addOption("numTopics", true, "Number of topcs");
+		ops.addOption("numTopics", true, "Number of topics if the perplexity analisis is enabled insert 2 value minTopics,maxTopics");
 		ops.addOption("textAnalysis", false,"Enable Text analysis" );
 			ops.addOption("dataset", true, "The dataset folder");
 			ops.addOption("pStopWord", true, "The text file witch contains the prener stopwords");
@@ -52,6 +59,7 @@ public class CliWorkflow {
 			snf.setValueSeparator(',');*/
 			
 			ops.addOption("serializedNerFile", true, "Serialized ner file separated by coma");
+			ops.addOption("enablePerplexityAnalisis", false, "Enable the preplexity analisis for automatically select the best nuber of topics");
 		ops.addOption("graphFilter", false, "Enable Graph Filtering");
 			ops.addOption("pctFilter", true, "[0..1] number of arc(percentual) less weighted to be deleted");
 			ops.addOption("pctFilterCentrality", true, "[0..1] number of node(percentual) less central to be deleted");
@@ -81,14 +89,26 @@ public class CliWorkflow {
 			formatter.printHelp( "TopicModelStage", options );
 			return false;
 		}
+		this.perplexityAnalysis = cmd.hasOption("enablePerplexityAnalisis");
 		if(!cmd.hasOption("numTopics")){
 			System.err.println("Number of topics required");
 			return false;
 		}
-		this.numberOfTopics = Integer.parseInt(cmd.getOptionValue("numTopics"));
-		if(this.numberOfTopics <= 0){
-			System.err.println("Number of topics must be integer positive");
-			return false;
+		if(this.perplexityAnalysis){
+			String[] tmpPer = cmd.getOptionValue("numTopics").split(",");
+			this.minNumberOfTopics = Integer.parseInt(tmpPer[0]);
+			this.maxNumberOfTopics = Integer.parseInt(tmpPer[1]);
+			if(this.maxNumberOfTopics < this.minNumberOfTopics || this.minNumberOfTopics < 0){
+				System.err.println("The number of topics must be integer and positive; first the min then the max");
+				return false;
+			}
+		}
+		else{
+			this.numberOfTopics = Integer.parseInt(cmd.getOptionValue("numTopics"));
+			if(this.numberOfTopics <= 0){
+				System.err.println("Number of topics must be integer positive");
+				return false;
+			}
 		}
 		//NUMBER OF THREADS
 		this.numberOfThreads = 1;
@@ -151,9 +171,10 @@ public class CliWorkflow {
 			throw new Exception("Parametri non correttamente inizializzati");
 		}
 		if(this.textAnalysis){
-			WorkflowTextAnalysis.startWorkflow(this.numberOfThreads, this.numberOfTopics, this.datasetFolder, this.preNerStopWordFile, this.stopWordFile, this.serializedNerFiles, this.serializeTopicsWordForJSON);
+			this.numberOfTopics = WorkflowTextAnalysis.startWorkflow(this.numberOfThreads, this.numberOfTopics, this.datasetFolder, this.preNerStopWordFile, this.stopWordFile, this.serializedNerFiles, this.serializeTopicsWordForJSON, this.perplexityAnalysis, this.minNumberOfTopics, this.maxNumberOfTopics);
 		}
 		if(this.graphFilter){
+
 			WorkflowGraphFilter.startWorkflow(this.numberOfThreads, this.numberOfTopics, this.pctFilterValue, this.classFilters,this.generateComunities, generateNetFile, this.generateJSONFile, this.interclassEdgeOnly, this.pctFilterCentralityValue);
 		}
 		

@@ -44,6 +44,27 @@ public class CustomTopicModel {
 		} catch (IOException e) {}
 		this.instances = instances;
 	}
+	
+	public int findBestNTopics(int minNTopics, int maxNTopics, int nThreads){
+		int max = 0;
+		double maxPerplexity = 0.0;
+		for(int i = minNTopics; i < maxNTopics; i++){
+			this.modella(i, nThreads);
+			int tmp = 0;
+			for(int j = 0; j < this.model.tokensPerTopic.length; j++){
+				tmp += this.model.tokensPerTopic[j];
+			}
+			double perplexity = Math.exp(this.model.modelLogLikelihood()/tmp);
+			if( perplexity > maxPerplexity){
+				maxPerplexity = perplexity;
+				max = i;
+			}
+			
+		}
+		System.out.println("Perplexity: " + maxPerplexity);
+		System.out.println("Number of topics: " + max);
+		return max;
+	}
 	//TODO In rank dovrebbe essere un parametro e non hard coded
 	public void serializeTopicsWordForJSON(String path) throws IOException{
 		JSONObject root = new JSONObject();
