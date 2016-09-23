@@ -36,13 +36,14 @@ public class WorkflowGraphFilterThread extends Thread {
 				}
 			}
 		
-			if(this.monitor.generateNetFile){
-				g.serializeForPajec("Topic" + i + ".net");
-			}
-			if(this.monitor.generateJSONFile){
+		
+			if(this.monitor.filterByComunityDim > 0){
+				GraphComunityExtractor gce = new GraphComunityExtractor();
 				try {
-					g.serializeForSigma("Topic" + i + ".json");
-				} catch (IOException e) {
+					gce.generateComunities(g, 1.0, 57, 1, 50);
+					g = gce.fiterNodesByComunity(this.monitor.filterByComunityDim);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
@@ -73,6 +74,16 @@ public class WorkflowGraphFilterThread extends Thread {
 					e.printStackTrace();
 				}
 				
+			}
+			if(this.monitor.generateNetFile){
+				g.serializeForPajec("Topic" + i + ".net");
+			}
+			if(this.monitor.generateJSONFile){
+				try {
+					g.serializeForSigma("Topic" + i + ".json");
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 	}

@@ -36,6 +36,7 @@ public class CliWorkflow {
 	private boolean perplexityAnalysis;
 	private int minNumberOfTopics;
 	private int maxNumberOfTopics;
+	private int filterByComunityDim;
 	public CliWorkflow(String[] args){
 		this.args = args;
 	}
@@ -69,6 +70,7 @@ public class CliWorkflow {
 			ops.addOption("generateNetFile", false, "Generate graph in pajec format");
 			ops.addOption("generateJSONFile", false, "Generate graph in JSON Sigma format");
 			ops.addOption("interclassEdgeOnly", false, "Filter all intraclass edge(only when class filter is used)");
+			ops.addOption("filterByComunityDim", true, "Filter all vertices that belong to the community 'less than or equal to the parameter");
 		ops.addOption("help", false, "Generate this output");
 		
 		
@@ -159,6 +161,10 @@ public class CliWorkflow {
 		this.generateNetFile = cmd.hasOption("generateNetFile");
 		this.generateJSONFile = cmd.hasOption("generateJSONFile");
 		this.interclassEdgeOnly = cmd.hasOption("interclassEdgeOnly");
+		this.filterByComunityDim = 0;
+		if(cmd.hasOption("filterByComunityDim")){
+			this.filterByComunityDim = Integer.parseInt(cmd.getOptionValue("filterByComunityDim"));
+		}
 		this.parameterOK = true;
 		return true;
 	}
@@ -171,7 +177,7 @@ public class CliWorkflow {
 			this.numberOfTopics = WorkflowTextAnalysis.startWorkflow(this.numberOfThreads, this.numberOfTopics, this.datasetFolder, this.preNerStopWordFile, this.stopWordFile, this.serializedNerFiles, this.serializeTopicsWordForJSON, this.perplexityAnalysis, this.minNumberOfTopics, this.maxNumberOfTopics);
 		}
 		if(this.graphFilter){
-			WorkflowGraphFilter.startWorkflow(this.numberOfThreads, this.numberOfTopics, this.pctFilterValue, this.classFilters,this.generateComunities, generateNetFile, this.generateJSONFile, this.interclassEdgeOnly, this.pctFilterCentralityValue);
+			WorkflowGraphFilter.startWorkflow(this.numberOfThreads, this.numberOfTopics, this.pctFilterValue, this.classFilters,this.generateComunities, generateNetFile, this.generateJSONFile, this.interclassEdgeOnly, this.pctFilterCentralityValue, this.filterByComunityDim);
 		}
 		
 	}

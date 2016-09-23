@@ -13,6 +13,7 @@ import java.io.Serializable;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 
@@ -56,6 +57,13 @@ public class EntityTopicGraph implements Serializable{
 			throw new Exception("Matrice già generata; impossibile aggiungere vertici");
 		this.vertexDictionary.add(ent);
 	}
+	
+	public void addVertices(Collection <CustomEntity> ents)throws Exception{
+		if(this.adiacentMatrix != null)
+			throw new Exception("Matrice già generata; impossibile aggiungere vertici");
+		this.vertexDictionary.addAll(ents);
+	}
+	
 	public void initializeMatrix(){
 		this.adiacentMatrix = new double[this.vertexDictionary.size()][this.vertexDictionary.size()];
 	}

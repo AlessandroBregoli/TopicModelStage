@@ -14,14 +14,14 @@ public class WorkflowGraphFilter {
 			new WorkflowGraphFilterThread(f).start();
 		f.waitUntillEnd();
 	}*/
-	public static void startWorkflow(int nThreads, int nTopics, double pctFilter, String[] classFilter, boolean generateComunities, boolean generateNetFile, boolean generateJSONFile, boolean interclassEdgeOnly, double pctFilterCentrality ){
-		WorkflowGraphFilter f = new WorkflowGraphFilter(nThreads, nTopics, pctFilter, classFilter, generateComunities, generateNetFile, generateJSONFile, interclassEdgeOnly, pctFilterCentrality);
+	public static void startWorkflow(int nThreads, int nTopics, double pctFilter, String[] classFilter, boolean generateComunities, boolean generateNetFile, boolean generateJSONFile, boolean interclassEdgeOnly, double pctFilterCentrality, int filterByComunityDim ){
+		WorkflowGraphFilter f = new WorkflowGraphFilter(nThreads, nTopics, pctFilter, classFilter, generateComunities, generateNetFile, generateJSONFile, interclassEdgeOnly, pctFilterCentrality, filterByComunityDim);
 		for(int i = 0; i < nThreads; i++)
 			new WorkflowGraphFilterThread(f).start();
 		f.waitUntillEnd();
 	}
 	
-	public WorkflowGraphFilter(int nThreads, int nTopics,double pctFilter, String[] classFilter, boolean generateComunities, boolean generateNetFile, boolean generateJSONFile, boolean interclassEdgeOnly, double pctFilterCentrality){
+	public WorkflowGraphFilter(int nThreads, int nTopics,double pctFilter, String[] classFilter, boolean generateComunities, boolean generateNetFile, boolean generateJSONFile, boolean interclassEdgeOnly, double pctFilterCentrality, int filterByComunityDim){
 		this.nThreads = nThreads;
 		this.nTopics = nTopics;
 		this.pctFilter = pctFilter;
@@ -31,6 +31,7 @@ public class WorkflowGraphFilter {
 		this.generateJSONFile = generateJSONFile;
 		this.interclassEdgeOnly = interclassEdgeOnly;
 		this.pctFilterCentrality = pctFilterCentrality;
+		this.filterByComunityDim = filterByComunityDim;
 		
 	}
 	int currentTopic = 0;
@@ -43,6 +44,7 @@ public class WorkflowGraphFilter {
 	boolean generateNetFile;
 	boolean generateJSONFile;
 	boolean interclassEdgeOnly;
+	int filterByComunityDim;
 	public synchronized int getGraphIndex(){
 		if(currentTopic < nTopics)
 			return currentTopic++;

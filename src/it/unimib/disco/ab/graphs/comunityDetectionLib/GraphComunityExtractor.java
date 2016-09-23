@@ -189,5 +189,27 @@ public class GraphComunityExtractor {
 		}
 		return ret;
 	}
-	
+	//Questo filtro elimina tutti i nodi che appartengono ad entità con numero di elementi pari od inferiore ad i
+	public EntityTopicGraph fiterNodesByComunity(int filter) throws Exception{
+		EntityTopicGraph ret = new EntityTopicGraph(this.graph.getTopic());
+		if(this.comunities == null){
+			throw new Exception("Comunità non generate");
+		}
+		for(EntityTopicGraph cm: this.comunities){
+			if(cm.getVertexDictionary().size() > filter){
+				ret.addVertices(cm.getVertexDictionary());
+			}
+		}
+		ret.initializeMatrix();
+		
+		for(int i = 0; i < ret.getVertexDictionary().size() - 1; i++){
+			int idOriginalMatrixI = this.graph.getVertexDictionary().indexOf(ret.getVertexDictionary().get(i));
+			for(int j = i + 1; j < ret.getVertexDictionary().size(); j++){
+				int idOriginalMatrixJ = this.graph.getVertexDictionary().indexOf(ret.getVertexDictionary().get(j));
+				ret.getAdiacentMatrix()[i][j] = this.graph.getAdiacentMatrix()[idOriginalMatrixI][idOriginalMatrixJ];
+				ret.getAdiacentMatrix()[j][i] = ret.getAdiacentMatrix()[i][j];
+			}
+		}
+		return ret;
+	}
 }
