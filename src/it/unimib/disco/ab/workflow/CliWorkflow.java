@@ -13,10 +13,7 @@ public class CliWorkflow {
 		
 		CliWorkflow c = new CliWorkflow(args);
 		c.parseArgs();
-
 		c.exec();
-
-		System.out.println("CIAONE");
 	}
 	String[] args;
 	private int numberOfTopics;
@@ -174,7 +171,6 @@ public class CliWorkflow {
 			this.numberOfTopics = WorkflowTextAnalysis.startWorkflow(this.numberOfThreads, this.numberOfTopics, this.datasetFolder, this.preNerStopWordFile, this.stopWordFile, this.serializedNerFiles, this.serializeTopicsWordForJSON, this.perplexityAnalysis, this.minNumberOfTopics, this.maxNumberOfTopics);
 		}
 		if(this.graphFilter){
-
 			WorkflowGraphFilter.startWorkflow(this.numberOfThreads, this.numberOfTopics, this.pctFilterValue, this.classFilters,this.generateComunities, generateNetFile, this.generateJSONFile, this.interclassEdgeOnly, this.pctFilterCentralityValue);
 		}
 		

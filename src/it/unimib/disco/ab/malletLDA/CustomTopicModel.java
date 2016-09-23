@@ -2,6 +2,7 @@ package it.unimib.disco.ab.malletLDA;
 
 import it.unimib.disco.ab.textPreprocessing.SentenceContainer;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -45,16 +46,20 @@ public class CustomTopicModel {
 		this.instances = instances;
 	}
 	
-	public int findBestNTopics(int minNTopics, int maxNTopics, int nThreads){
+	public int findBestNTopics(int minNTopics, int maxNTopics, int nThreads) {
 		int max = 0;
 		double maxPerplexity = 0.0;
+		StringBuffer indices = new StringBuffer();
+		StringBuffer values = new StringBuffer();
 		for(int i = minNTopics; i < maxNTopics; i++){
+			indices.append(i + "\t");
 			this.modella(i, nThreads);
 			int tmp = 0;
 			for(int j = 0; j < this.model.tokensPerTopic.length; j++){
 				tmp += this.model.tokensPerTopic[j];
 			}
 			double perplexity = Math.exp(-this.model.modelLogLikelihood()/tmp);
+			values.append(perplexity + "\t");
 			if( perplexity > maxPerplexity){
 				maxPerplexity = perplexity;
 				max = i;
@@ -63,6 +68,17 @@ public class CustomTopicModel {
 		}
 		System.out.println("Perplexity: " + maxPerplexity);
 		System.out.println("Number of topics: " + max);
+		try {
+			File f = new File("perplexity values.csv");
+			FileWriter fw = new FileWriter(f);
+			indices.append("\n");
+			fw.write(indices.toString());
+			fw.write(values.toString());
+			fw.close();
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		return max;
 	}
 	//TODO In rank dovrebbe essere un parametro e non hard coded
