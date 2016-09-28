@@ -132,7 +132,7 @@ public class EntityTopicGraph implements Serializable{
 			addElementRic(value, (index2 + index1)/2 + 1, index2, list);
 		}
 	}
-	public void pctFilter(double pct){
+	private ArrayList<Double> getOrderedListOfEdge(){
 		ArrayList<Double> lista = new ArrayList<Double>();
 		for(int i = 0; i < this.adiacentMatrix.length - 1; i++){
 			for(int j = i+1; j < this.adiacentMatrix.length; j++){
@@ -141,7 +141,9 @@ public class EntityTopicGraph implements Serializable{
 				}
 			}
 		}
-		double filtValue = lista.get((int)((lista.size()-1) * pct));
+		return lista;
+	}
+	private void filtMatrixEdge(ArrayList<Double> list, double filtValue){
 		for(int i = 0; i < this.adiacentMatrix.length -1 ; i++)
 			for(int j = i+1; j < this.adiacentMatrix.length; j++){
 				if(this.adiacentMatrix[i][j] < filtValue)
@@ -149,7 +151,17 @@ public class EntityTopicGraph implements Serializable{
 					this.adiacentMatrix[j][i] = 0.0;
 			}
 	}
+	public void pctFilter(double pct){
+		ArrayList<Double> lista = this.getOrderedListOfEdge();
+		double filtValue = lista.get((int)((lista.size()-1) * pct));
+		this.filtMatrixEdge(lista, filtValue);
+	}
 	
+	public void constFilter(int filt){
+		ArrayList<Double> lista = this.getOrderedListOfEdge();
+		double filtValue = lista.get(lista.size() - filt);
+		this.filtMatrixEdge(lista, filtValue);
+	}
 	public double[][] getAdiacentMatrix(){
 		return this.adiacentMatrix;
 	}
@@ -222,7 +234,7 @@ public class EntityTopicGraph implements Serializable{
 		
 		
 	}
-	
+	//seleziona con la percentuale
 	public EntityTopicGraph getCentralityFilteredGraph(double pct) throws Exception{
 		
 		EntityTopicGraph ret = new EntityTopicGraph(this.topic);
@@ -245,6 +257,29 @@ public class EntityTopicGraph implements Serializable{
 			}
 		}
 		
+		return ret;
+	}
+	//Seleziona un numero costante di nodi
+	public EntityTopicGraph getCentralityFilteredGraph(int val) throws Exception{
+		EntityTopicGraph ret = new EntityTopicGraph(this.topic);
+		double[] centrality = this.getCentrality();
+		double[] centrality2 = centrality.clone();
+		Arrays.sort(centrality2);
+		double filt = centrality2[centrality.length - val];
+		for(int i = 0; i < centrality.length; i++){
+			if(centrality[i] > filt){
+				ret.addVertex(this.vertexDictionary.get(i));
+			}
+		}
+		ret.initializeMatrix();
+		for(int i = 0; i < ret.getVertexDictionary().size() - 1; i++){
+			int idOriginalMatrixI = this.vertexDictionary.indexOf(ret.getVertexDictionary().get(i));
+			for(int j = i + 1; j < ret.getVertexDictionary().size(); j++){
+				int idOriginalMatrixJ = this.vertexDictionary.indexOf(ret.getVertexDictionary().get(j));
+				ret.getAdiacentMatrix()[i][j] = this.adiacentMatrix[idOriginalMatrixI][idOriginalMatrixJ];
+				ret.getAdiacentMatrix()[j][i] = ret.getAdiacentMatrix()[i][j];
+			}
+		}
 		return ret;
 	}
 	public EntityTopicGraph getFilteredGraph(CustomEntityMatcher cem, boolean interclassOnly){

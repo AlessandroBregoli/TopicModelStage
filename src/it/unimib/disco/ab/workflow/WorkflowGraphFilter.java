@@ -14,14 +14,14 @@ public class WorkflowGraphFilter {
 			new WorkflowGraphFilterThread(f).start();
 		f.waitUntillEnd();
 	}*/
-	public static void startWorkflow(int nThreads, int nTopics, double pctFilter, String[] classFilter, boolean generateComunities, boolean generateNetFile, boolean generateJSONFile, boolean interclassEdgeOnly, double pctFilterCentrality, int filterByComunityDim ){
-		WorkflowGraphFilter f = new WorkflowGraphFilter(nThreads, nTopics, pctFilter, classFilter, generateComunities, generateNetFile, generateJSONFile, interclassEdgeOnly, pctFilterCentrality, filterByComunityDim);
+	public static void startWorkflow(int nThreads, int nTopics, double pctFilter, String[] classFilter, boolean generateComunities, boolean generateNetFile, boolean generateJSONFile, boolean interclassEdgeOnly, double pctFilterCentrality, int filterByComunityDim, int constFilterCentrality ){
+		WorkflowGraphFilter f = new WorkflowGraphFilter(nThreads, nTopics, pctFilter, classFilter, generateComunities, generateNetFile, generateJSONFile, interclassEdgeOnly, pctFilterCentrality, filterByComunityDim, constFilterCentrality);
 		for(int i = 0; i < nThreads; i++)
 			new WorkflowGraphFilterThread(f).start();
 		f.waitUntillEnd();
 	}
 	
-	public WorkflowGraphFilter(int nThreads, int nTopics,double pctFilter, String[] classFilter, boolean generateComunities, boolean generateNetFile, boolean generateJSONFile, boolean interclassEdgeOnly, double pctFilterCentrality, int filterByComunityDim){
+	public WorkflowGraphFilter(int nThreads, int nTopics,double pctFilter, String[] classFilter, boolean generateComunities, boolean generateNetFile, boolean generateJSONFile, boolean interclassEdgeOnly, double pctFilterCentrality, int filterByComunityDim, int constFilterCentrality){
 		this.nThreads = nThreads;
 		this.nTopics = nTopics;
 		this.pctFilter = pctFilter;
@@ -32,8 +32,10 @@ public class WorkflowGraphFilter {
 		this.interclassEdgeOnly = interclassEdgeOnly;
 		this.pctFilterCentrality = pctFilterCentrality;
 		this.filterByComunityDim = filterByComunityDim;
+		this.constFilterCentrality = constFilterCentrality;
 		
 	}
+	int constFilterCentrality;
 	int currentTopic = 0;
 	int nTopics = 0;
 	int nThreads = 0;

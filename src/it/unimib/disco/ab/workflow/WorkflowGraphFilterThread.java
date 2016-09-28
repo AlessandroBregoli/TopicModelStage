@@ -35,7 +35,15 @@ public class WorkflowGraphFilterThread extends Thread {
 					e.printStackTrace();
 				}
 			}
-		
+		if(this.monitor.constFilterCentrality > 0){
+			try {
+				g = g.getCentralityFilteredGraph(this.monitor.constFilterCentrality);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
 		
 			if(this.monitor.filterByComunityDim > 0){
 				GraphComunityExtractor gce = new GraphComunityExtractor();
