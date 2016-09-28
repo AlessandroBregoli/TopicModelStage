@@ -16,30 +16,16 @@ public class CliWorkflow {
 		c.exec();
 	}
 	String[] args;
-	private int numberOfTopics;
-	private int numberOfThreads;
-	private boolean textAnalysis;
-	private String datasetFolder;
-	private String preNerStopWordFile;
-	private String stopWordFile;
-	private String serializedNerFiles[];
-	private boolean graphFilter;
-	private double pctFilterValue;
-	private double pctFilterCentralityValue;
-	private String[] classFilters;
-	private boolean generateComunities;
-	private boolean generateNetFile;
-	private boolean generateJSONFile;
+	WorkflowGraphFilter wgf;
+	WorkflowTextAnalysis wta;
 	private boolean parameterOK;
-	private boolean serializeTopicsWordForJSON;
-	private boolean interclassEdgeOnly;
-	private boolean perplexityAnalysis;
-	private int minNumberOfTopics;
-	private int maxNumberOfTopics;
-	private int filterByComunityDim;
-	private int constFilterCentrality;
+	private boolean textAnalysis;
+	private boolean graphFilter;
 	public CliWorkflow(String[] args){
 		this.args = args;
+		this.wta = new WorkflowTextAnalysis();
+		this.wgf = new WorkflowGraphFilter();
+		
 	}
 	
 	//Le opzioni della cli
@@ -90,35 +76,36 @@ public class CliWorkflow {
 			formatter.printHelp( "TopicModelStage", options );
 			return false;
 		}
-		this.perplexityAnalysis = cmd.hasOption("enablePerplexityAnalysis");
+		this.wta.perplexityAnalysis = cmd.hasOption("enablePerplexityAnalysis");
 		if(!cmd.hasOption("numTopics")){
 			System.err.println("Number of topics required");
 			return false;
 		}
-		if(this.perplexityAnalysis){
+		if(this.wta.perplexityAnalysis){
 			String[] tmpPer = cmd.getOptionValue("numTopics").split(",");
-			this.minNumberOfTopics = Integer.parseInt(tmpPer[0]);
-			this.maxNumberOfTopics = Integer.parseInt(tmpPer[1]);
-			if(this.maxNumberOfTopics < this.minNumberOfTopics || this.minNumberOfTopics < 0){
+			this.wta.minNumberOfTopics = Integer.parseInt(tmpPer[0]);
+			this.wta.maxNumberOfTopics = Integer.parseInt(tmpPer[1]);
+			if(this.wta.maxNumberOfTopics < this.wta.minNumberOfTopics || this.wta.minNumberOfTopics < 0){
 				System.err.println("The number of topics must be integer and positive; first the min then the max");
 				return false;
 			}
 		}
 		else{
-			this.numberOfTopics = Integer.parseInt(cmd.getOptionValue("numTopics"));
-			if(this.numberOfTopics <= 0){
+			this.wta.nTopics = Integer.parseInt(cmd.getOptionValue("numTopics"));
+			if(this.wta.nTopics <= 0){
 				System.err.println("Number of topics must be integer positive");
 				return false;
 			}
 		}
 		//NUMBER OF THREADS
-		this.numberOfThreads = 1;
+		this.wta.nThreads = 1;
 		if(cmd.hasOption("numThread")){
-			this.numberOfThreads = Integer.parseInt(cmd.getOptionValue("numThread"));
-			if(this.numberOfThreads < 1){
-				this.numberOfThreads = 1;
+			this.wta.nThreads = Integer.parseInt(cmd.getOptionValue("numThread"));
+			if(this.wta.nThreads < 1){
+				this.wta.nThreads = 1;
 			}
 		}
+		this.wgf.nThreads = this.wta.nThreads;
 		//TextAnalysis(ner lda & graph generation)
 		this.textAnalysis = cmd.hasOption("textAnalysis");
 		if(this.textAnalysis){
@@ -126,50 +113,50 @@ public class CliWorkflow {
 				System.err.println("Dataset folder required for text analysis");
 				return false;
 			}
-			this.datasetFolder = cmd.getOptionValue("dataset");
+			this.wta.datasetFolder = cmd.getOptionValue("dataset");
 		}
-		this.preNerStopWordFile = null;
+		this.wta.preNerStopWordFile = null;
 		if(this.textAnalysis && cmd.hasOption("pStopWord")){
-			this.preNerStopWordFile = cmd.getOptionValue("pStopWord");
+			this.wta.preNerStopWordFile = cmd.getOptionValue("pStopWord");
 		}
-		this.stopWordFile = null;
+		this.wta.stopWordFile = null;
 		if(this.textAnalysis && cmd.hasOption("stopWord")){
-			this.stopWordFile = cmd.getOptionValue("stopWord");
+			this.wta.stopWordFile = cmd.getOptionValue("stopWord");
 		}	
 		if(this.textAnalysis){
 			if(!cmd.hasOption("serializedNerFile")){
 				System.err.println("serializedNerFile required for text analysis");
 				return false;
 			}
-			this.serializedNerFiles = cmd.getOptionValue("serializedNerFile").split(",");
+			this.wta.serialNer = cmd.getOptionValue("serializedNerFile").split(",");
 		}
-		this.serializeTopicsWordForJSON = cmd.hasOption("serializeTopicsWordForJSON");
+		this.wta.serializeTopicsWordForJSON = cmd.hasOption("serializeTopicsWordForJSON");
 		
 		//Graph filtering
 		this.graphFilter = cmd.hasOption("graphFilter");
-		this.pctFilterValue = 0.0;
+		this.wgf.pctFilter = 0.0;
 		if(this.graphFilter && cmd.hasOption("pctFilter")){
-			this.pctFilterValue = Double.parseDouble(cmd.getOptionValue("pctFilter"));
+			this.wgf.pctFilter = Double.parseDouble(cmd.getOptionValue("pctFilter"));
 		}
-		this.pctFilterCentralityValue = 0.0;
+		this.wgf.pctFilterCentrality = 0.0;
 		if(this.graphFilter && cmd.hasOption("pctFilterCentrality")){
-			this.pctFilterCentralityValue = Double.parseDouble(cmd.getOptionValue("pctFilterCentrality"));
+			this.wgf.pctFilterCentrality = Double.parseDouble(cmd.getOptionValue("pctFilterCentrality"));
 		}
-		this.classFilters = null;
+		this.wgf.classFilter = null;
 		if(this.graphFilter && cmd.hasOption("classFilter")){
-			this.classFilters = cmd.getOptionValue("classFilter").split(",");
+			this.wgf.classFilter = cmd.getOptionValue("classFilter").split(",");
 		}
-		this.generateComunities = cmd.hasOption("generateC");
-		this.generateNetFile = cmd.hasOption("generateNetFile");
-		this.generateJSONFile = cmd.hasOption("generateJSONFile");
-		this.interclassEdgeOnly = cmd.hasOption("interclassEdgeOnly");
-		this.filterByComunityDim = 0;
+		this.wgf.generateComunities = cmd.hasOption("generateC");
+		this.wgf.generateNetFile = cmd.hasOption("generateNetFile");
+		this.wgf.generateJSONFile = cmd.hasOption("generateJSONFile");
+		this.wgf.interclassEdgeOnly = cmd.hasOption("interclassEdgeOnly");
+		this.wgf.filterByComunityDim = 0;
 		if(cmd.hasOption("filterByComunityDim")){
-			this.filterByComunityDim = Integer.parseInt(cmd.getOptionValue("filterByComunityDim"));
+			this.wgf.filterByComunityDim = Integer.parseInt(cmd.getOptionValue("filterByComunityDim"));
 		}
-		this.constFilterCentrality = 0;
+		this.wgf.constFilterCentrality = 0;
 		if(cmd.hasOption("constFilterCentrality")){
-			this.constFilterCentrality = Integer.parseInt(cmd.getOptionValue("constFilterCentrality"));
+			this.wgf.constFilterCentrality = Integer.parseInt(cmd.getOptionValue("constFilterCentrality"));
 		}
 		this.parameterOK = true;
 		return true;
@@ -180,10 +167,11 @@ public class CliWorkflow {
 			throw new Exception("Parametri non correttamente inizializzati");
 		}
 		if(this.textAnalysis){
-			this.numberOfTopics = WorkflowTextAnalysis.startWorkflow(this.numberOfThreads, this.numberOfTopics, this.datasetFolder, this.preNerStopWordFile, this.stopWordFile, this.serializedNerFiles, this.serializeTopicsWordForJSON, this.perplexityAnalysis, this.minNumberOfTopics, this.maxNumberOfTopics);
+			this.wta.startWorkflow();
 		}
+		this.wgf.nTopics = this.wta.nTopics;
 		if(this.graphFilter){
-			WorkflowGraphFilter.startWorkflow(this.numberOfThreads, this.numberOfTopics, this.pctFilterValue, this.classFilters,this.generateComunities, generateNetFile, this.generateJSONFile, this.interclassEdgeOnly, this.pctFilterCentralityValue, this.filterByComunityDim,this.constFilterCentrality);
+			this.wgf.startWorkflow();
 		}
 		
 	}

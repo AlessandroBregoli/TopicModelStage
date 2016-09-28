@@ -20,6 +20,18 @@ import it.unimib.disco.ab.textPreprocessing.SentenceSplitter;
 import it.unimib.disco.ab.xmlParser.DirectoryScanner;
 
 public class WorkflowTextAnalysis {
+	String datasetFolder;
+	String preNerStopWordFile;
+	int nThreads;
+	String[] serialNer;
+	String stopWordFile;
+	int minNumberOfTopics;
+	boolean perplexityAnalysis;
+	int maxNumberOfTopics;
+	int nTopics;
+	boolean serializeTopicsWordForJSON;	
+
+/*
 	public static void main(String[] args) throws Exception{
 		String[] serialNer = {
 				"/home/alessandro/Schifezze/stanford-ner-2015-12-09/classifiers/english.all.3class.distsim.crf.ser.gz",
@@ -27,8 +39,8 @@ public class WorkflowTextAnalysis {
 				"/home/alessandro/Schifezze/stanford-ner-2015-12-09/classifiers/english.muc.7class.distsim.crf.ser.gz"
 		};
 		WorkflowTextAnalysis.startWorkflow(3, 30, "/home/alessandro/MEGAsync/Stage/Dataset/miniset", "/home/alessandro/MEGAsync/Stage/Stoplist/en-preNer.txt", "/home/alessandro/MEGAsync/Stage/Stoplist/en.txt", serialNer, true, false, 0, 0);
-	}
-	public static int startWorkflow(int nThreads, int nTopic, String datasetFolder, String prenerStopWordFile, String stopWordFile, String[] serialNer, boolean serializeTopicsWordForJSON, boolean perplexityAnalisis, int minNumberOfTopics, int maxNumberOfTopics) throws Exception{
+	}*/
+	public void startWorkflow() throws Exception{
 		
 		System.out.println("Loading xml");
 		DirectoryScanner ds = new DirectoryScanner(new File(datasetFolder));
@@ -36,9 +48,9 @@ public class WorkflowTextAnalysis {
 		System.out.println("Splitting sentences");
 		SentenceContainer sc = new SentenceSplitter(ds.getArticles());
 		SentenceContainer scCopy = (SentenceContainer) sc.clone();
-		if(prenerStopWordFile != null){
+		if(preNerStopWordFile != null){
 			System.out.println("Loading pre-ner stopwords");
-			File sw = new File(prenerStopWordFile);
+			File sw = new File(preNerStopWordFile);
 			LinkedList<String> stopWords= new LinkedList<String>();
 			try{
 			FileReader fr = new FileReader(sw);
@@ -94,13 +106,13 @@ public class WorkflowTextAnalysis {
 		}*/
 
 		CustomTopicModel ctm = new CustomTopicModel(sc);
-		if(perplexityAnalisis){
+		if(this.perplexityAnalysis){
 			System.out.println("Using perplexity analisis");
-			nTopic = ctm.findBestNTopics(minNumberOfTopics, maxNumberOfTopics, nThreads);
+			nTopics = ctm.findBestNTopics(minNumberOfTopics, maxNumberOfTopics, nThreads);
 			
 		}
 		System.out.println("Using LDA");
-		ctm.modella(nTopic, nThreads);
+		ctm.modella(nTopics, nThreads);
 		if(serializeTopicsWordForJSON){
 			ctm.serializeTopicsWordForJSON("topics.json");
 		}
@@ -113,7 +125,6 @@ public class WorkflowTextAnalysis {
 		/*System.out.println("Using static graph analyzer");
 		StaticGraphAnalyzer sga = new StaticGraphAnalyzer(scCopy, entities, str, sgg.graphs, 2);
 		sga.analizeGraph(nThreads);*/
-		return nTopic;
 	}
 
 }
