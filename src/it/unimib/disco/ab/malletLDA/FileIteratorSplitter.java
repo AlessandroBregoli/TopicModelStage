@@ -1,7 +1,7 @@
 package it.unimib.disco.ab.malletLDA;
 
-import it.unimib.disco.ab.xmlParser.Article;
-import it.unimib.disco.ab.xmlParser.ReutersParserHandler;
+import it.unimib.disco.ab.datasetParser.Article;
+import it.unimib.disco.ab.datasetParser.ReutersParserHandler;
 
 import java.io.BufferedReader;
 import java.io.File;

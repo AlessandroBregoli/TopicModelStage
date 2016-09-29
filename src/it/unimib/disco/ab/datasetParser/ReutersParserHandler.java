@@ -1,4 +1,4 @@
-package it.unimib.disco.ab.xmlParser;
+package it.unimib.disco.ab.datasetParser;
 
 import java.text.DateFormat;
 import java.text.ParseException;

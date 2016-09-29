@@ -1,6 +1,6 @@
 package it.unimib.disco.ab.textPreprocessing;
 
-import it.unimib.disco.ab.xmlParser.Article;
+import it.unimib.disco.ab.datasetParser.Article;
 
 import java.util.ArrayList;
 import java.util.List;

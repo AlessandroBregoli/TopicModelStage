@@ -6,6 +6,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
 
+import it.unimib.disco.ab.datasetParser.DirectoryScanner;
+import it.unimib.disco.ab.datasetParser.DirectoryScannerForRetuers;
 import it.unimib.disco.ab.graphs.EntityTopicGraph;
 import it.unimib.disco.ab.graphs.StaticGraphAnalyzer;
 import it.unimib.disco.ab.graphs.StaticGraphGenerator;
@@ -17,7 +19,6 @@ import it.unimib.disco.ab.ner.EntitySetIterator;
 import it.unimib.disco.ab.ner.ParallelNer;
 import it.unimib.disco.ab.textPreprocessing.SentenceContainer;
 import it.unimib.disco.ab.textPreprocessing.SentenceSplitter;
-import it.unimib.disco.ab.xmlParser.DirectoryScanner;
 
 public class WorkflowTextAnalysis {
 	String datasetFolder;
@@ -43,7 +44,7 @@ public class WorkflowTextAnalysis {
 	public void startWorkflow() throws Exception{
 		
 		System.out.println("Loading xml");
-		DirectoryScanner ds = new DirectoryScanner(new File(datasetFolder));
+		DirectoryScanner ds = new DirectoryScannerForRetuers(new File(datasetFolder));
 		ds.startScan();
 		System.out.println("Splitting sentences");
 		SentenceContainer sc = new SentenceSplitter(ds.getArticles());

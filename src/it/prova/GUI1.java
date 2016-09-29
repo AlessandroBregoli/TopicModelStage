@@ -12,7 +12,7 @@ import it.unimib.disco.ab.malletLDA.InstancesBuilder;
 import it.unimib.disco.ab.ner.CustomEntity;
 import it.unimib.disco.ab.ner.Ner;
 import it.unimib.disco.ab.textPreprocessing.SentenceSplitter;
-import it.unimib.disco.ab.xmlParser.DirectoryScanner;
+import it.unimib.disco.ab.datasetParser.DirectoryScanner;
 
 import java.awt.EventQueue;
 

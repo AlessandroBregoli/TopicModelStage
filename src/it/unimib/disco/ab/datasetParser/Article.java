@@ -1,4 +1,4 @@
-package it.unimib.disco.ab.xmlParser;
+package it.unimib.disco.ab.datasetParser;
 
 import java.util.Date;
 import java.util.LinkedList;

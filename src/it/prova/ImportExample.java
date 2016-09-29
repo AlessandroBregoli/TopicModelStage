@@ -3,7 +3,7 @@ package it.prova;
 import it.unimib.disco.ab.malletLDA.FileIteratorSplitter;
 import it.unimib.disco.ab.malletLDA.InstancesBuilder;
 import it.unimib.disco.ab.textPreprocessing.SentenceContainer;
-import it.unimib.disco.ab.xmlParser.Article;
+import it.unimib.disco.ab.datasetParser.Article;
 
 import java.io.*;
 import java.util.*;

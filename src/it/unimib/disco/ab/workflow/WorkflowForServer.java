@@ -1,5 +1,6 @@
 package it.unimib.disco.ab.workflow;
 
+import it.unimib.disco.ab.datasetParser.DirectoryScanner;
 import it.unimib.disco.ab.graphs.StaticGraphGenerator;
 import it.unimib.disco.ab.malletLDA.CustomTopicModel;
 import it.unimib.disco.ab.malletLDA.ParallelInferencer;
@@ -9,7 +10,6 @@ import it.unimib.disco.ab.ner.EntitySetIterator;
 import it.unimib.disco.ab.ner.ParallelNer;
 import it.unimib.disco.ab.textPreprocessing.SentenceContainer;
 import it.unimib.disco.ab.textPreprocessing.SentenceSplitter;
-import it.unimib.disco.ab.xmlParser.DirectoryScanner;
 
 import java.io.BufferedReader;
 import java.io.File;

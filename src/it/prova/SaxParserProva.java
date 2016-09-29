@@ -1,6 +1,6 @@
 package it.prova;
 
-import it.unimib.disco.ab.xmlParser.*;
+import it.unimib.disco.ab.datasetParser.*;
 
 import java.io.File;
 import java.util.LinkedList;
