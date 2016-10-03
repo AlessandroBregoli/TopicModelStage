@@ -267,7 +267,7 @@ public class EntityTopicGraph implements Serializable{
 		Arrays.sort(centrality2);
 		double filt = centrality2[centrality.length - val];
 		for(int i = 0; i < centrality.length; i++){
-			if(centrality[i] > filt){
+			if(centrality[i] >= filt){
 				ret.addVertex(this.vertexDictionary.get(i));
 			}
 		}

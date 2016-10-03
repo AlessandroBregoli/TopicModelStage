@@ -1,15 +1,7 @@
 package it.unimib.disco.ab.workflow;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.*;
-
 import it.unimib.disco.ab.datasetParser.DirectoryScanner;
-import it.unimib.disco.ab.datasetParser.DirectoryScannerForRetuers;
-import it.unimib.disco.ab.graphs.EntityTopicGraph;
-import it.unimib.disco.ab.graphs.StaticGraphAnalyzer;
+import it.unimib.disco.ab.datasetParser.DirectoryScannerForBBC;
 import it.unimib.disco.ab.graphs.StaticGraphGenerator;
 import it.unimib.disco.ab.malletLDA.CustomTopicModel;
 import it.unimib.disco.ab.malletLDA.ParallelInferencer;
@@ -19,6 +11,13 @@ import it.unimib.disco.ab.ner.EntitySetIterator;
 import it.unimib.disco.ab.ner.ParallelNer;
 import it.unimib.disco.ab.textPreprocessing.SentenceContainer;
 import it.unimib.disco.ab.textPreprocessing.SentenceSplitter;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.LinkedList;
+import java.util.TreeMap;
 
 public class WorkflowTextAnalysis {
 	String datasetFolder;
@@ -44,7 +43,7 @@ public class WorkflowTextAnalysis {
 	public void startWorkflow() throws Exception{
 		
 		System.out.println("Loading xml");
-		DirectoryScanner ds = new DirectoryScannerForRetuers(new File(datasetFolder));
+		DirectoryScanner ds = new DirectoryScannerForBBC(new File(datasetFolder));
 		ds.startScan();
 		System.out.println("Splitting sentences");
 		SentenceContainer sc = new SentenceSplitter(ds.getArticles());
@@ -77,7 +76,7 @@ public class WorkflowTextAnalysis {
 		}
 		System.out.println("Filtering sentences from eitities");
 		EntitySetIterator esi = new EntitySetIterator(entities.keySet());
-		sc.filterUsingIterator(esi, nThreads);;
+		sc.filterUsingIterator(esi, nThreads);
 		if(stopWordFile != null){
 			System.out.println("Loading stop-words");
 			File sw = new File(stopWordFile);
