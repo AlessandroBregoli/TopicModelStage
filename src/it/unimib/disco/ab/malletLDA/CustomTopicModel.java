@@ -47,27 +47,23 @@ public class CustomTopicModel {
 	}
 	
 	public int findBestNTopics(int minNTopics, int maxNTopics, int nThreads) {
-		int max = 0;
+		int min = 0;
 		double minPerplexity = Double.POSITIVE_INFINITY;
 		StringBuffer indices = new StringBuffer();
 		StringBuffer values = new StringBuffer();
 		for(int i = minNTopics; i < maxNTopics; i++){
 			indices.append(i + "\t");
 			this.modella(i, nThreads);
-			int tmp = 0;
-			for(int j = 0; j < this.model.tokensPerTopic.length; j++){
-				tmp += this.model.tokensPerTopic[j];
-			}
-			double perplexity = Math.exp(-this.model.modelLogLikelihood()/tmp);
+			double perplexity = Math.exp(-this.model.modelLogLikelihood()/this.model.totalTokens);
 			values.append(perplexity + "\t");
 			if( perplexity < minPerplexity){
 				minPerplexity = perplexity;
-				max = i;
+				min = i;
 			}
 			
 		}
 		System.out.println("Perplexity: " + minPerplexity);
-		System.out.println("Number of topics: " + max);
+		System.out.println("Number of topics: " + min);
 		try {
 			File f = new File("perplexity values.csv");
 			FileWriter fw = new FileWriter(f);
@@ -79,7 +75,7 @@ public class CustomTopicModel {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		return max;
+		return min;
 	}
 	//TODO In rank dovrebbe essere un parametro e non hard coded
 	public void serializeTopicsWordForJSON(String path) throws IOException{
