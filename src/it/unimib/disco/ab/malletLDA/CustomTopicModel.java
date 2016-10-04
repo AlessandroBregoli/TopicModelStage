@@ -48,7 +48,7 @@ public class CustomTopicModel {
 	
 	public int findBestNTopics(int minNTopics, int maxNTopics, int nThreads) {
 		int max = 0;
-		double maxPerplexity = 0.0;
+		double minPerplexity = Double.POSITIVE_INFINITY;
 		StringBuffer indices = new StringBuffer();
 		StringBuffer values = new StringBuffer();
 		for(int i = minNTopics; i < maxNTopics; i++){
@@ -60,13 +60,13 @@ public class CustomTopicModel {
 			}
 			double perplexity = Math.exp(-this.model.modelLogLikelihood()/tmp);
 			values.append(perplexity + "\t");
-			if( perplexity > maxPerplexity){
-				maxPerplexity = perplexity;
+			if( perplexity < minPerplexity){
+				minPerplexity = perplexity;
 				max = i;
 			}
 			
 		}
-		System.out.println("Perplexity: " + maxPerplexity);
+		System.out.println("Perplexity: " + minPerplexity);
 		System.out.println("Number of topics: " + max);
 		try {
 			File f = new File("perplexity values.csv");
