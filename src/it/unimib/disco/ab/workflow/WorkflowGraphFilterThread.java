@@ -30,20 +30,24 @@ public class WorkflowGraphFilterThread extends Thread {
 			if(this.monitor.pctFilterCentrality > 0.0){
 				try {
 					g = g.getCentralityFilteredGraph(this.monitor.pctFilterCentrality);
+					//Questo server per eliminare tutti i nodi orfani
+					g = g.getCentralityFilteredGraphByValue(0.0);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
-		if(this.monitor.constFilterCentrality > 0){
-			try {
-				g = g.getCentralityFilteredGraph(this.monitor.constFilterCentrality);
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			if(this.monitor.constFilterCentrality > 0){
+				try {
+					g = g.getCentralityFilteredGraph(this.monitor.constFilterCentrality);
+					//Questo server per eliminare tutti i nodi orfani
+					g = g.getCentralityFilteredGraphByValue(0.0);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
 			}
-			
-		}
 		
 			if(this.monitor.filterByComunityDim > 0){
 				GraphComunityExtractor gce = new GraphComunityExtractor();

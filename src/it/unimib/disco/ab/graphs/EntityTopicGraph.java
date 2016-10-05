@@ -176,7 +176,7 @@ public class EntityTopicGraph implements Serializable{
 		if(this.adiacentMatrix == null)
 			throw new Exception("Matrice di adiacenza non generata");
 		double centrality[] = new double[this.adiacentMatrix[0].length];
-		Arrays.fill(centrality, 0);
+		Arrays.fill(centrality, 0.0);
 		for(int i = 0; i < this.adiacentMatrix.length - 1; i++){
 			for(int j = i + 1; j < this.adiacentMatrix.length; j++){
 				if(this.adiacentMatrix[i][j] > 0){
@@ -235,37 +235,23 @@ public class EntityTopicGraph implements Serializable{
 		
 	}
 	//seleziona con la percentuale
-	public EntityTopicGraph getCentralityFilteredGraph(double pct) throws Exception{
-		
-		EntityTopicGraph ret = new EntityTopicGraph(this.topic);
-		double[] centrality = this.getCentrality();
-		double[] centrality2 = centrality.clone();
-		Arrays.sort(centrality2);
-		double filt = centrality2[(int) (pct * centrality.length)];
-		for(int i = 0; i < centrality.length; i++){
-			if(centrality[i] >= filt && centrality[i] > 0.0){
-				ret.addVertex(this.vertexDictionary.get(i));
-			}
+		public EntityTopicGraph getCentralityFilteredGraph(double pct) throws Exception{
+			double[] centrality = this.getCentrality();
+			Arrays.sort(centrality);
+			double filt = centrality[(int) (pct * centrality.length)];
+			return this.getCentralityFilteredGraphByValue(filt);
 		}
-		ret.initializeMatrix();
-		for(int i = 0; i < ret.getVertexDictionary().size() - 1; i++){
-			int idOriginalMatrixI = this.vertexDictionary.indexOf(ret.getVertexDictionary().get(i));
-			for(int j = i + 1; j < ret.getVertexDictionary().size(); j++){
-				int idOriginalMatrixJ = this.vertexDictionary.indexOf(ret.getVertexDictionary().get(j));
-				ret.getAdiacentMatrix()[i][j] = this.adiacentMatrix[idOriginalMatrixI][idOriginalMatrixJ];
-				ret.getAdiacentMatrix()[j][i] = ret.getAdiacentMatrix()[i][j];
-			}
+		//Seleziona un numero costante di nodi
+		public EntityTopicGraph getCentralityFilteredGraph(int val) throws Exception{
+			double[] centrality = this.getCentrality();
+			Arrays.sort(centrality);
+			double filt = centrality[centrality.length - val];
+			return this.getCentralityFilteredGraphByValue(filt);
 		}
 		
-		return ret;
-	}
-	//Seleziona un numero costante di nodi
-	public EntityTopicGraph getCentralityFilteredGraph(int val) throws Exception{
+	public EntityTopicGraph getCentralityFilteredGraphByValue(double filt) throws Exception{
 		EntityTopicGraph ret = new EntityTopicGraph(this.topic);
 		double[] centrality = this.getCentrality();
-		double[] centrality2 = centrality.clone();
-		Arrays.sort(centrality2);
-		double filt = centrality2[centrality.length - val];
 		for(int i = 0; i < centrality.length; i++){
 			if(centrality[i] >= filt && centrality[i] > 0.0){
 				ret.addVertex(this.vertexDictionary.get(i));
@@ -282,6 +268,7 @@ public class EntityTopicGraph implements Serializable{
 		}
 		return ret;
 	}
+	
 	public EntityTopicGraph getFilteredGraph(CustomEntityMatcher cem, boolean interclassOnly){
 		EntityTopicGraph ret = new EntityTopicGraph(this.topic);
 		Iterator<CustomEntity> it = this.vertexDictionary.iterator();

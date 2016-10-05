@@ -32,7 +32,7 @@ public class CustomTopicModel {
 	public void modella(int nTopics, int nThreads){
 		InstanceList instances = InstancesBuilder.getInstances(this.dataSet);
 		this.nTopics = nTopics;
-		double alpha = 0.0001* nTopics;
+		double alpha = 0.0001 * nTopics;
 		double beta = 0.01;
 		this.model = new ParallelTopicModel(nTopics, alpha, beta);
 		this.model.setSymmetricAlpha(true);
