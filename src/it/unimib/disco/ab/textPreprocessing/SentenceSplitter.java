@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
 
+//Estensione di un sentenceContainer che, utilizzando una bellissima regexp hard-coded che funziona male,
+//suddivide ogni articolo in frasi
 public class SentenceSplitter extends SentenceContainer{
 	
 	

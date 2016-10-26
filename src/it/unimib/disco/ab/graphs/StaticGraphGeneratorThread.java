@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 
 import edu.stanford.nlp.ling.CoreAnnotations.PrevChildAnnotation;
-import it.unimib.disco.ab.entityTopicStatistics.TopicStatTuple;
 import it.unimib.disco.ab.ner.CustomEntity;
 
 public class StaticGraphGeneratorThread extends Thread {
@@ -14,6 +13,10 @@ public class StaticGraphGeneratorThread extends Thread {
 		this.monitor = monitor;
 	}
 	
+	//Questo metodo dato un topic genera un grafo partendo dai nodi selezionati da 
+	//StaticGraphInizializerThread.
+	//Calcola il peso degli archi andando a cercare le cooccorrenze nelle frasi e poi
+	//utilizza l'impormazione mutua per generare il valore.
 	public void run(){
 		while(true){
 			int topic = this.monitor.nextTopic();

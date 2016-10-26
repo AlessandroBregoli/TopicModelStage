@@ -9,6 +9,7 @@ import java.util.TreeMap;
 import java.util.regex.Pattern;
 
 
+//Questa classe è il contenitore di frasi; espone anche una serie di metodi per il filtraggio
 public class SentenceContainer {
 	public TreeMap<Long, Sentence> sentences;
 	private Iterator<String> filterWords;

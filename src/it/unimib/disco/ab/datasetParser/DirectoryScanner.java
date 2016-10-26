@@ -10,7 +10,8 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 import org.xml.sax.SAXException;
-
+//Classe astratta che analizza una directory; l'implementata dell'analisi della directory viene delegata
+//alle classi figlie
 public abstract class DirectoryScanner {
 	protected File directory;
 	protected ArrayList<Article> articles;

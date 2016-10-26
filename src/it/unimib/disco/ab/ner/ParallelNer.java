@@ -11,7 +11,7 @@ import java.util.TreeMap;
 import edu.stanford.nlp.ie.AbstractSequenceClassifier;
 import edu.stanford.nlp.ie.crf.CRFClassifier;
 import edu.stanford.nlp.ling.CoreLabel;
-
+//Monitor utilizzato per parallelizzare l'applicazione del NER su tutte le frasi
 public class ParallelNer {
 	private int nThreads;
 	AbstractSequenceClassifier<CoreLabel>[] classifier;

@@ -8,7 +8,9 @@ import java.util.*;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
-
+//Implementazione di un Handler per il parser XML SAX in grado di estrarre informazioni
+//dal dataset REUTER opportunamente ripulito e convertito in XML
+//La pulitura e la conversione non sono fatte nel programma ma a mano.
 public class ReutersParserHandler extends DefaultHandler{
 	private List<Article> articleList;
 	private Article article;

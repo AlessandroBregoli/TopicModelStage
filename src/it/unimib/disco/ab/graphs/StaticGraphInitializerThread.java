@@ -8,6 +8,10 @@ public class StaticGraphInitializerThread extends Thread{
 		this.monitor = monitor;
 	}
 	
+	//Questo metodo richiede un CustomEntity e cerca a quali topic è connessa andando ad
+	//analizzare le frasi in cui è contenuta; se tale entità è contenuta almeno in un frase
+	//connessa ad un certo topic tale entità viene aggiunta al VertexDictionary del grafo
+	//relativo al topic
 	@Override
 	public void run(){
 		while(true){

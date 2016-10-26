@@ -10,7 +10,7 @@ import java.util.TreeMap;
 import cc.mallet.topics.TopicInferencer;
 import cc.mallet.types.Instance;
 import cc.mallet.types.InstanceList;
-
+//Questo è il monitor della classe ParallelInferencerThread
 public class ParallelInferencer {
 	private int nThreads;
 	SentenceTopicRelation senteceTopicRelation;

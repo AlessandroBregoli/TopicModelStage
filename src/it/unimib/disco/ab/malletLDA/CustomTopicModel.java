@@ -19,7 +19,7 @@ import cc.mallet.types.Alphabet;
 import cc.mallet.types.IDSorter;
 import cc.mallet.types.InstanceList;
 
-
+//Questa classe è un wrapper di mallet
 public class CustomTopicModel {
 	private SentenceContainer dataSet;
 	public ParallelTopicModel model;
@@ -46,6 +46,9 @@ public class CustomTopicModel {
 		this.instances = instances;
 	}
 	
+	//Questo in teoria dovrebbe trovare il corretto numero di topic usando la perplexity ma
+	//in pratica fa cagare per via del valore di alpha generlamente piccolo utilizzato in questo
+	//modello  e anche per il filtraggio aggressivo eseguito.
 	public int findBestNTopics(int minNTopics, int maxNTopics, int nThreads) {
 		int min = 0;
 		double minPerplexity = Double.POSITIVE_INFINITY;

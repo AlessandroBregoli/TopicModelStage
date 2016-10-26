@@ -1,7 +1,5 @@
 package it.unimib.disco.ab.graphs;
 
-import it.unimib.disco.ab.entityTopicStatistics.NerStats;
-import it.unimib.disco.ab.entityTopicStatistics.TopicStat;
 import it.unimib.disco.ab.malletLDA.SentenceTopicRelation;
 import it.unimib.disco.ab.ner.CustomEntity;
 
@@ -9,6 +7,9 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.TreeMap;
 
+//Questa classe serve per generare i grafi; può utilizzare uno o più thread
+//La generazione si svolge in due fasi una di generazione; una di inizializzazione
+//(StaticGraphInitializerThread) e una di effettiva generazione (StaticGraphGeneratorThread) 
 public class StaticGraphGenerator {
 	private int nThreads;
 	private int topicIndex;

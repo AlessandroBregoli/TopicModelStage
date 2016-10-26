@@ -26,17 +26,25 @@ import it.unimib.disco.ab.ner.CustomEntityMatcher;
 //TODO definire una superclasse Graph se si intende usare grafi in più di un'occasione
 //Questa classe gestisce prevalentemente grafi non diretti quindi di fatto solo metà della matrice di adiacenza viene considerata
 public class EntityTopicGraph implements Serializable{
-	
+	//Questo è stato fatto in quanto altrimenti ad ogni ricompilazione java si lamentava
+	//e non riusciva ad aprire Grafi generati con versioni precedenti anche se identiche
 	public static final long serialVersionUID = 1L;
+	//Matrice di adiacenza che contiene i pesi degli archi
 	double adiacentMatrix[][];
+	//Dizionario dei nodi; gli indici dei nodi di questo ArrayList sono corrsispondenti alla patrice
+	//di adiacenza; quindi se la matrice viene chiamata con adiacentMatrix[1][2] si può andare nel
+	//vertexDictionary per vedere quali entità ci sono in posizione 1 ed in posizione 2
 	ArrayList<CustomEntity> vertexDictionary;
 	int topic;
+	
+	//Questo costruttore prepara un grafo vuoto 
 	public EntityTopicGraph(int topic){
 		this.vertexDictionary = new ArrayList<CustomEntity>();
 		this.adiacentMatrix = null;
 		this.topic = topic;
 	}
 	
+	//Questo cotruttore carica un grafo serializzato da un file
 	public EntityTopicGraph(String serializedObj){
 		EntityTopicGraph etg = null;
 		try {
@@ -52,18 +60,24 @@ public class EntityTopicGraph implements Serializable{
 		
 	}
 	
+	//Con questo metodo si riempie il vertexDictionary; questo è possibile solo fino a quando
+	//la matrice di adiacenza non viene generata
 	public void addVertex(CustomEntity ent) throws Exception{
 		if(this.adiacentMatrix != null)
 			throw new Exception("Matrice già generata; impossibile aggiungere vertici");
 		this.vertexDictionary.add(ent);
 	}
 	
+	//Questo metodo è equivalente a quello sopra ma invece di aggiungere un  nodo alla volta
+	//ne aggiunge una collezione
 	public void addVertices(Collection <CustomEntity> ents)throws Exception{
 		if(this.adiacentMatrix != null)
 			throw new Exception("Matrice già generata; impossibile aggiungere vertici");
 		this.vertexDictionary.addAll(ents);
 	}
 	
+	//Una volta che tutti i nodi sono stati aggiunti viene generata una matrice di adiacenza
+	//(bidimensionale) che ha sia per lunnghezza che per altezza la dimensione del vertexDictionary
 	public void initializeMatrix(){
 		this.adiacentMatrix = new double[this.vertexDictionary.size()][this.vertexDictionary.size()];
 	}
@@ -101,6 +115,8 @@ public class EntityTopicGraph implements Serializable{
 	public int getTopic(){
 		return this.topic;
 	}
+	
+	
 	public void serializeForJava(String path){
 		try {
 			FileOutputStream f = new FileOutputStream(path);
@@ -113,6 +129,9 @@ public class EntityTopicGraph implements Serializable{
 		}
 		
 	}
+	
+	//Questo metodo è di utilità interna all'oggetto e aggiunge ad una lista 
+	//ordinata un elemento in modo che la lista resti ordinata
 	private static void addElement(double value, ArrayList<Double> list){
 		if(list.size() == 0){
 			list.add(value);
@@ -120,6 +139,9 @@ public class EntityTopicGraph implements Serializable{
 		}
 		EntityTopicGraph.addElementRic(value, 0, list.size() - 1, list);
 	}
+	
+	//Questo è il metodo ricorsivo che che esegue effettivamente l'inserimento di un valore in
+	//una lista ordinata
 	private static void addElementRic(double value, int index1, int index2, ArrayList<Double> list){
 		if(index2 <= index1){
 			list.add(index1, value);
@@ -132,6 +154,8 @@ public class EntityTopicGraph implements Serializable{
 			addElementRic(value, (index2 + index1)/2 + 1, index2, list);
 		}
 	}
+	
+	//Questo metodo ritorna la lista ordinata di archi
 	private ArrayList<Double> getOrderedListOfEdge(){
 		ArrayList<Double> lista = new ArrayList<Double>();
 		for(int i = 0; i < this.adiacentMatrix.length - 1; i++){
@@ -143,7 +167,10 @@ public class EntityTopicGraph implements Serializable{
 		}
 		return lista;
 	}
-	private void filtMatrixEdge(ArrayList<Double> list, double filtValue){
+	
+	//Questo metodo, filtra la matrice di adiacenza utilizzando un valore di riferimento.
+	//Ogni valore strettamente minore di filtValue viene impostato a 0
+	private void filtMatrixEdge(double filtValue){
 		for(int i = 0; i < this.adiacentMatrix.length -1 ; i++)
 			for(int j = i+1; j < this.adiacentMatrix.length; j++){
 				if(this.adiacentMatrix[i][j] < filtValue)
@@ -151,17 +178,22 @@ public class EntityTopicGraph implements Serializable{
 					this.adiacentMatrix[j][i] = 0.0;
 			}
 	}
+	
+	//Questo metodo filtra gli archi in modo da lasciare gli 1-pct archi più pesanti
+	//dove pct varia tra 0 e 1
 	public void pctFilter(double pct){
 		ArrayList<Double> lista = this.getOrderedListOfEdge();
 		double filtValue = lista.get((int)((lista.size()-1) * pct));
-		this.filtMatrixEdge(lista, filtValue);
+		this.filtMatrixEdge(filtValue);
 	}
 	
+	//Questo metodo filtra gli archi lascianto solo i primi filt archi più pesanti
 	public void constFilter(int filt){
 		ArrayList<Double> lista = this.getOrderedListOfEdge();
 		double filtValue = lista.get(lista.size() - filt);
-		this.filtMatrixEdge(lista, filtValue);
+		this.filtMatrixEdge(filtValue);
 	}
+	
 	public double[][] getAdiacentMatrix(){
 		return this.adiacentMatrix;
 	}
@@ -172,6 +204,8 @@ public class EntityTopicGraph implements Serializable{
 	
 	//implementato per grafi non diretti
 	//dunque considera solo metà matrice
+	//Questo metodo calcola la centralità di ogni nodo come somma dei pesi degli archi connessi
+	//al nodo
 	public double[] getCentrality() throws Exception{
 		if(this.adiacentMatrix == null)
 			throw new Exception("Matrice di adiacenza non generata");
@@ -189,7 +223,7 @@ public class EntityTopicGraph implements Serializable{
 		return centrality;
 	}
 	
-	
+	//Serializza il grafo in formato JSON leggibile dalla libreria sigma
 	public void serializeForSigma(String path) throws IOException{
 		JSONObject root = new JSONObject();
 		JSONArray nodes = new JSONArray();
@@ -248,7 +282,9 @@ public class EntityTopicGraph implements Serializable{
 			double filt = centrality[centrality.length - val];
 			return this.getCentralityFilteredGraphByValue(filt);
 		}
-		
+	
+		//Questo metodo filtra i nodi per centralità andado ad eliminare tutti quelli minori o
+		//uguali a filt e tutti quelli con centralità pari a 0
 	public EntityTopicGraph getCentralityFilteredGraphByValue(double filt) throws Exception{
 		EntityTopicGraph ret = new EntityTopicGraph(this.topic);
 		double[] centrality = this.getCentrality();
@@ -269,6 +305,9 @@ public class EntityTopicGraph implements Serializable{
 		return ret;
 	}
 	
+	//Filtra il grafo utilizzando le classe di entità riconosciute dal ner utilizzando una whitelist.
+	//Se la variabile interclassOnly viene settata a true tutti gli archi che connettono entità
+	//dello stesso tipo vengono eliminati
 	public EntityTopicGraph getFilteredGraph(CustomEntityMatcher cem, boolean interclassOnly){
 		EntityTopicGraph ret = new EntityTopicGraph(this.topic);
 		Iterator<CustomEntity> it = this.vertexDictionary.iterator();

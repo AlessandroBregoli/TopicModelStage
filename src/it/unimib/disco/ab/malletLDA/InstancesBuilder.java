@@ -7,9 +7,6 @@ import java.util.*;
 import java.util.regex.*;
 
 import cc.mallet.pipe.*;
-import cc.mallet.pipe.iterator.*;
-import cc.mallet.topics.ParallelTopicModel;
-import cc.mallet.topics.TopicInferencer;
 import cc.mallet.types.*;
 
 

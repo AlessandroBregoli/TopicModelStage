@@ -2,7 +2,8 @@ package it.unimib.disco.ab.malletLDA;
 
 import cc.mallet.topics.TopicInferencer;
 import cc.mallet.types.Instance;
-
+//Questa classe continua a richiedere frasi fino a quando non finiscono
+//Su ogni frase vienne fatta inferenza
 public class ParallelInferencerThread extends Thread{
 	private ParallelInferencer monitor;
 	public static final int numIteration = 50;

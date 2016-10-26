@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import edu.stanford.nlp.util.Triple;
-
+//Questa classe fa il merge dei risultati di più modelli di NER; 
+//in caso di conflitto viene data più rilevanza al primo
 public class NerMerge implements Iterable<CustomEntity> {
 	private ArrayList<Integer> indices = new ArrayList<Integer>();
 	private ArrayList<String> labels = new ArrayList<String>();

@@ -8,6 +8,7 @@ import java.util.Set;
 
 import cc.mallet.types.Instance;
 
+//Questa classe è un iteratore sulla classe SentenceContainer
 public class SentenceIterator implements Iterator {
 	
 	private SentenceContainer sentences;

@@ -2,6 +2,8 @@ package it.unimib.disco.ab.graphs;
 
 import it.unimib.disco.ab.ner.CustomEntity;
 import it.unimib.disco.ab.ner.CustomEntityMatcher;
+//Implementazione di CustomEntityMatcher che confronta entità passate al metodo match
+//per classe e ritorna True solo se la classe è contenuta nella whitelist
 
 public class CustomEntityMatcherByClass implements CustomEntityMatcher{
 	private String[] whiteList;

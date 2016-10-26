@@ -4,11 +4,14 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.TreeMap;
 
-import it.unimib.disco.ab.entityTopicStatistics.NerStats;
 import it.unimib.disco.ab.malletLDA.SentenceTopicRelation;
 import it.unimib.disco.ab.ner.CustomEntity;
 import it.unimib.disco.ab.textPreprocessing.SentenceContainer;
 
+//Questa classe viene utilizzata come monitor dalla classe StaticGraphAnalyzerThread
+//E server per fare il filtraggio dei grafi.
+//Ogni topic, e quindi ogni grafo, è indipendente dagli altri dunque è possibile filtrarli separatamente
+//utilizzando diversi tread.
 public class StaticGraphAnalyzer {
 	SentenceContainer sentences;
 	EntityTopicGraph[] graphs;

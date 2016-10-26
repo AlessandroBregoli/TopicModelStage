@@ -2,6 +2,7 @@ package it.unimib.disco.ab.graphs;
 
 import java.util.ArrayList;
 
+//Questa classe implementa  un algoritmo per trovare le componenti connesse basato sul dfs
 public class GraphUtils {
 	
 	

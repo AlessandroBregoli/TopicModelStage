@@ -8,7 +8,8 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 import org.xml.sax.SAXException;
-
+//Implementazione del DirectoryScanner. Questa implementazione funziona con il dataset reuters
+//opportunamente convertito in XML
 public class DirectoryScannerForRetuers extends DirectoryScanner{
 
 	public DirectoryScannerForRetuers(File directory) {

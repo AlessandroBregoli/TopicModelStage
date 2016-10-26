@@ -2,7 +2,7 @@ package it.unimib.disco.ab.datasetParser;
 
 import java.util.Date;
 import java.util.LinkedList;
-
+//Classe "database" contiene un articolo ed i suoi possibili metadati
 public class Article {
 	public Date date;
 	public LinkedList<String> topics;

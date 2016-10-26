@@ -6,7 +6,7 @@ import java.util.List;
 
 import edu.stanford.nlp.util.Triple;
 import it.unimib.disco.ab.textPreprocessing.Sentence;
-
+//Applicazione del ner  alle frasi restituite dal monitor
 public class ParallelNerThread extends Thread {
 	ParallelNer monitor;
 	public ParallelNerThread(ParallelNer monitor){

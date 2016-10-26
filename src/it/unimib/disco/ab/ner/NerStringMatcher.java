@@ -4,7 +4,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import it.unimib.disco.ab.textPreprocessing.StringMatcher;
-
+//Questa classe dato  un array di pattern controlla se la stringa in ingresso
+//matcha con qualcuno dei suddetti
 public class NerStringMatcher extends StringMatcher {
 	private Pattern[] pattern;
 	public NerStringMatcher(String[] regex) {
@@ -15,7 +16,6 @@ public class NerStringMatcher extends StringMatcher {
 	}
 	@Override
 	public boolean match(String str) {
-		// TODO Auto-generated method stub
 		for(int i = 0; i < this.pattern.length; i++){
 			if(pattern[i].matcher(str).matches())
 				return true;

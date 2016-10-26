@@ -1,6 +1,5 @@
 package it.unimib.disco.ab.graphs;
 
-import it.unimib.disco.ab.entityTopicStatistics.TopicStatTuple;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -11,6 +10,8 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeMap;
 
+//Questa classe filtra i grafi utilizzando le varie flag e valori presi dalla classe
+//monitor StaticGraphAnalyzer
 public class StaticGraphAnalyzerThread extends Thread{
 	StaticGraphAnalyzer monitor;
 	public StaticGraphAnalyzerThread(StaticGraphAnalyzer monitor) {
@@ -27,7 +28,6 @@ public class StaticGraphAnalyzerThread extends Thread{
 			try {
 				fw = new FileWriter(f);
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			BufferedWriter bw = new BufferedWriter(fw);
